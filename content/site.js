@@ -9,9 +9,11 @@ window.SITE_DATA = {
     shortName: "T",
     role: "Computer Science Undergraduate",
     eyebrow: "HELLO, I AM",
-    intro: "计算机科学本科生，关注数据库系统、Agent Memory 与系统软件。我喜欢把模糊问题压缩成可验证的模型，再把模型落实为真正可运行的工程。",
+    intro: "",
     status: "Open to learning & collaboration",
-    tags: ["Database Systems", "Agent Memory", "Systems", "Research", "Open Source"],
+    tags: ["Interested In:", "Database", "Agent Memory", "Computer System", "Vibe Coding", "羽毛球",
+           "音乐", "昆虫", "观鸟", "阅读", "心理学", "经济学", "哲学", "商学", "传播学", "Research"
+    ],
     facts: [
       { label: "School", value: "Renmin University of China" },
       { label: "Major", value: "Computer Science" },
@@ -20,8 +22,8 @@ window.SITE_DATA = {
     ],
     actions: [
       { label: "GitHub", url: "https://github.com/Exyeus", icon: "github", primary: true },
-      { label: "阅读我的文章", url: "#blogs", icon: "note" },
-      { label: "查看资源工具", url: "#resources", icon: "tool" }
+      { label: "Blogs", url: "#blogs", icon: "note" },
+      { label: "Resources", url: "#resources", icon: "tool" }
     ]
   },
 
@@ -30,21 +32,6 @@ window.SITE_DATA = {
       kicker: "RESEARCH",
       title: "Agent Memory",
       text: "从数据库、事务、时间语义和依赖闭包的角度研究 Agent Memory，尝试让记忆系统从经验性组件变为可解释、可验证的基础设施。"
-    },
-    {
-      kicker: "SYSTEMS",
-      title: "Database Internals",
-      text: "持续学习查询处理、事务、恢复、存储与并发控制，并通过 RMDB、TPC-C 和 CMU 15-445 等项目训练系统实现能力。"
-    },
-    {
-      kicker: "ENGINEERING",
-      title: "Build Useful Tools",
-      text: "偏好零负担、可维护、真正改善工作流的小工具：浏览器插件、论文阅读工具、可视化与个人知识基础设施。"
-    },
-    {
-      kicker: "METHOD",
-      title: "Think, Test, Refine",
-      text: "先建立直觉模型，再写出严格定义；先找可观测证据，再做优化。对研究与工程都坚持可复现和可证伪。"
     }
   ],
 
@@ -57,62 +44,50 @@ window.SITE_DATA = {
     },
     {
       year: "2026",
-      title: "CET-6 · 620",
-      description: "英语六级成绩，用于英文技术资料、论文阅读与跨语言技术交流。",
-      badge: "Language"
+      title: "中国人民大学大学生创业训练",
+      description: "研发一个 Agent Native 的 Paper 阅读器 配备相关，参与结构设计，负责 Agent 框架构建与 UI 优化",
+      badge: "国家级立项"
     },
     {
       year: "2026",
-      title: "CET-4 · 625",
-      description: "英语四级成绩。该条目可替换为奖学金、竞赛奖项、论文、专利或其他正式成果。",
+      title: "ASC 世界大学生超级计算机竞赛",
+      description: "优化引力波计算模拟程序",
+      badge: "Second Prize"
+    },
+    {
+      year: "2026",
+      title: "中国人民大学第28届创新杯课外学术科技作品竞赛",
+      description: "研究了AI生成内容的信息判断路径与干预节点",
+      badge: "特等奖"
+    },
+    {
+      year: "2026",
+      title: "2025-2026 北京外国语大学大创-创业实践项目",
+      description: "从 2024 年起尝试用 AI 赋能单词学习 参与单词讲解模式的设计，负责基于 Coze 的 Agent 工作流设计与实现",
+      badge: "国家级立项 & 良好结项"
+    },
+    {
+      year: "2024-2025",
+      title: "本科生学习优秀奖学金 社会工作与志愿服务骨干奖学金",
+      description: "",
+      badge: "三等奖学金"
+    }, 
+    {
+      year: "2025",
+      title: "CET-6 · 621",
+      description: "",
       badge: "Language"
     }
   ],
 
   resources: [
     {
-      title: "ClosureDB",
-      description: "面向 Agent Context 的事务化依赖闭包视图设想，关注版本、证据、时间语义与正确性契约。",
-      type: "Research Project",
-      url: "#blogs",
-      icon: "link"
-    },
-    {
-      title: "RMDB Notes",
-      description: "关系数据库实现、TPC-C 调优、并发控制、恢复机制与系统 profiling 的学习记录。",
-      type: "Knowledge Base",
-      url: "#blogs",
-      icon: "note"
-    },
-    {
       title: "WeRead Toolkit",
       description: "围绕微信读书选文、模板化提示词、Markdown 导出与 AI 阅读工作流的浏览器插件。",
       type: "Browser Extension",
-      url: "#",
+      url: "https://github.com/Exyeus/weread-web-assistant",
       icon: "tool"
-    },
-    {
-      title: "Personal Homepage",
-      description: "你正在浏览的零构建个人主页。只有 HTML、CSS、JavaScript，可直接部署到 GitHub Pages。",
-      type: "Open Source",
-      url: "https://github.com/Exyeus",
-      icon: "github"
-    },
-    {
-      title: "CS Learning Map",
-      description: "数据库、操作系统、编译原理、CSAPP 与机器学习的结构化学习地图。",
-      type: "Study Resource",
-      url: "#blogs",
-      icon: "calendar"
-    },
-    {
-      title: "Reading & Thinking",
-      description: "哲学、复杂系统与个人成长的阅读摘录和长期问题清单。",
-      type: "Reading Notes",
-      url: "#blogs",
-      icon: "tag"
     }
-  ],
+  ]
 
-  footer: "Built with plain HTML, CSS and JavaScript · No build step required."
 };
