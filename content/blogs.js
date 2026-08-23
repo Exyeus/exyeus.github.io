@@ -12,5 +12,13 @@ window.BLOG_DATA = [
     tags: ["GitHub Pages", "HTML", "Design"],
     summary: "减少依赖、降低部署失败面，并让内容修改退化成最简单的文本编辑。",
     file: "content/blogs/zero-build-homepage.md"
+  },
+  {
+    title: "系统能力大赛2026-DBMS赛道参赛总结",
+    date: "2026-08-23",
+    category: "Competition",
+    tags: ["DBMS", "Concurrency Control", "Optimization"],
+    summary: "一些之后应当践行的原则以及配套理论",
+    file: "content/blogs/2026-数据库赛后总结.md"
   }
 ];

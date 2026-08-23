@@ -19,7 +19,6 @@
     $("#heroEyebrow").textContent = profile.eyebrow;
     $("#heroName").textContent = profile.name;
     $("#heroIntro").textContent = profile.intro;
-    $("#profileAvatar").textContent = profile.shortName;
     $("#statusText").textContent = profile.status;
 
     $("#heroTags").innerHTML = profile.tags.map(tag => `<span class="hero-tag">${tag}</span>`).join("");
