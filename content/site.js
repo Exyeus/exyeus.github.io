@@ -1,6 +1,6 @@
 /*
  * 个人主页主配置
- * 修改这里即可更新个人信息、荣誉条目、研究方向和资源工具。
+ * 修改这里即可更新个人信息、项目经历、研究方向和资源工具。
  * 保持字段名不变；数组中的对象可自由增删、复制和排序。
  */
 window.SITE_DATA = {
@@ -22,8 +22,8 @@ window.SITE_DATA = {
     ],
     actions: [
       { label: "GitHub", url: "https://github.com/Exyeus", icon: "github", primary: true },
-      { label: "Blogs", url: "#blogs", icon: "note" },
-      { label: "Resources", url: "#resources", icon: "tool" }
+      { label: "Blogs", url: "blogs.html", icon: "note" },
+      { label: "Resources", url: "resources.html", icon: "tool" }
     ]
   },
 
@@ -35,7 +35,7 @@ window.SITE_DATA = {
     }
   ],
 
-  honors: [
+  projects: [
     {
       year: "2026",
       title: "全国大学生计算机系统能力大赛 · 数据库管理系统设计赛全国总决赛",

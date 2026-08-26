@@ -2,8 +2,12 @@
  * 博客目录
  * 新增文章只需两步：
  * 1. 在 content/blogs/ 新建一个 .md 文件；
- * 2. 在下面数组新增一项，并填写 file 路径。
+ * 2. 在下面数组新增一项，并填写 file 路径和 category。
+ *
+ * 分区只需维护 BLOG_SECTIONS：增加一个字符串即可新建，删除该字符串即可移除。
  */
+window.BLOG_SECTIONS = ["技术", "想法", "书摘"];
+
 window.BLOG_DATA = [
   {
     title: "这个主页为什么坚持零构建",
@@ -16,7 +20,7 @@ window.BLOG_DATA = [
   {
     title: "系统能力大赛2026-DBMS赛道参赛总结",
     date: "2026-08-23",
-    category: "Competition",
+    category: "技术",
     tags: ["DBMS", "Concurrency Control", "Optimization"],
     summary: "一些之后应当践行的原则以及配套理论",
     file: "content/blogs/2026-数据库赛后总结.md"

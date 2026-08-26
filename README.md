@@ -6,7 +6,10 @@
 
 ```text
 .
-├── index.html                 # 页面结构与图标
+├── index.html                 # 个人信息页
+├── projects.html              # 项目经历页
+├── blogs.html                 # 博客页
+├── resources.html             # 资源工具页
 ├── .nojekyll                  # 让 GitHub Pages 原样发布静态文件
 ├── assets/
 │   ├── styles.css             # 全部视觉样式
@@ -14,7 +17,7 @@
 │   ├── markdown.js            # 内置的轻量 Markdown 渲染器
 │   └── favicon.svg
 └── content/
-    ├── site.js                # 个人信息、荣誉、关于我、资源工具
+    ├── site.js                # 个人信息、项目经历、关于我、资源工具
     ├── blogs.js               # 博客元数据目录
     └── blogs/*.md             # 博客正文
 ```
@@ -41,13 +44,17 @@ Python 3 通常已经预装在 Linux 与多数开发环境中。也可以使用 
 
 - `profile`：姓名、介绍、标签、按钮和基本信息；
 - `about`：关于我的主题卡片；
-- `honors`：荣誉、竞赛、证书和阶段性成果；
+- `projects`：项目、竞赛、证书和阶段性成果；
 - `resources`：项目、工具和资源链接；
 - `footer`：页脚文字。
 
 复制数组中的一个 `{ ... }` 对象即可增加条目，删除对象即可移除条目。注意相邻对象之间要保留英文逗号。
 
+保存后直接刷新对应页面即可预览：个人信息在 `index.html`、项目经历在 `projects.html`、资源工具在 `resources.html`。这些页面都从同一个 `content/site.js` 读取数据，不需要重复编辑 HTML。
+
 ## 新增博客
+
+先在 `content/blogs.js` 顶部的 `BLOG_SECTIONS` 数组中维护分区，例如 `"技术"`、`"想法"`、`"书摘"`。增加一个字符串即新建分区，删除一个字符串即移除；也可在 Blogs 页面用“新建分区”临时创建自定义分区，分区会保存在当前浏览器中并可用 × 删除。
 
 ### 第一步：创建 Markdown 文件
 

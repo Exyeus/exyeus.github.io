@@ -13,11 +13,16 @@
 
   function renderProfile() {
     const profile = site.profile;
+    const brandName = $("#brandName");
+    const brandRole = $("#brandRole");
+    if (brandName) brandName.textContent = profile.name;
+    if (brandRole) brandRole.textContent = profile.role;
+
+    const heroName = $("#heroName");
+    if (!heroName) return;
     document.title = `${profile.name} · Personal Homepage`;
-    $("#brandName").textContent = profile.name;
-    $("#brandRole").textContent = profile.role;
     $("#heroEyebrow").textContent = profile.eyebrow;
-    $("#heroName").textContent = profile.name;
+    heroName.textContent = profile.name;
     $("#heroIntro").textContent = profile.intro;
     $("#statusText").textContent = profile.status;
 
@@ -30,7 +35,9 @@
   }
 
   function renderAbout() {
-    $("#aboutGrid").innerHTML = site.about.map((item, index) => `
+    if (!$("#aboutGrid")) return;
+    const items = Array.isArray(site.about) ? site.about : [];
+    $("#aboutGrid").innerHTML = items.map((item, index) => `
       <article class="about-card">
         <div class="card-kicker"><span>${item.kicker}</span><span>0${index + 1}</span></div>
         <h3>${item.title}</h3>
@@ -39,8 +46,10 @@
     `).join("");
   }
 
-  function renderHonors() {
-    $("#honorsList").innerHTML = site.honors.map(item => `
+  function renderProjects() {
+    if (!$("#projectsList")) return;
+    const items = Array.isArray(site.projects) ? site.projects : (site.honors || []);
+    $("#projectsList").innerHTML = items.map(item => `
       <article class="timeline-item">
         <div class="timeline-year">${item.year}</div>
         <div class="timeline-body"><h3>${item.title}</h3><p>${item.description}</p></div>
@@ -50,7 +59,9 @@
   }
 
   function renderResources() {
-    $("#resourceList").innerHTML = site.resources.map(item => {
+    if (!$("#resourceList")) return;
+    const items = Array.isArray(site.resources) ? site.resources : [];
+    $("#resourceList").innerHTML = items.map(item => {
       const attrs = isExternal(item.url) ? ' target="_blank" rel="noreferrer"' : "";
       return `<a class="resource-card" href="${item.url}"${attrs}>
         <span class="resource-icon">${icon(safeIcon(item.icon))}</span>
@@ -63,21 +74,73 @@
 
   let currentCategory = "全部";
   let searchText = "";
+  const customCategoryStorageKey = "tim-homepage-blog-custom-categories";
+
+  function escapeHtml(value) {
+    return String(value).replace(/[&<>"]/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[character]);
+  }
+
+  function loadCustomCategories() {
+    try {
+      const value = JSON.parse(window.localStorage.getItem(customCategoryStorageKey) || "[]");
+      return Array.isArray(value) ? value.filter(item => typeof item === "string" && item.trim()) : [];
+    } catch {
+      return [];
+    }
+  }
+
+  let customCategories = loadCustomCategories();
+
+  function saveCustomCategories() {
+    try {
+      window.localStorage.setItem(customCategoryStorageKey, JSON.stringify(customCategories));
+    } catch {
+      // 本地存储不可用时，当前页面内仍可使用新建的分区。
+    }
+  }
 
   function blogCategories() {
-    return ["全部", ...new Set(blogs.map(blog => blog.category))];
+    const configured = Array.isArray(window.BLOG_SECTIONS) ? window.BLOG_SECTIONS : [];
+    return ["全部", ...new Set([...configured, ...customCategories, ...blogs.map(blog => blog.category)].filter(Boolean))];
   }
 
   function renderBlogFilters() {
-    $("#blogFilters").innerHTML = blogCategories().map(category => `
-      <button class="filter-pill${category === currentCategory ? " active" : ""}" type="button" data-category="${category}">${category}</button>
-    `).join("");
+    if (!$("#blogFilters")) return;
+    $("#blogFilters").innerHTML = blogCategories().map(category => {
+      const custom = customCategories.includes(category);
+      return `<span class="filter-pill-group"><button class="filter-pill${category === currentCategory ? " active" : ""}" type="button" data-category="${escapeHtml(category)}">${escapeHtml(category)}</button>${custom ? `<button class="filter-delete" type="button" data-delete-category="${escapeHtml(category)}" aria-label="删除分区 ${escapeHtml(category)}">×</button>` : ""}</span>`;
+    }).join("");
     $$(".filter-pill", $("#blogFilters")).forEach(button => {
       button.addEventListener("click", () => {
         currentCategory = button.dataset.category;
         renderBlogFilters();
         renderBlogs();
       });
+    });
+    $$(".filter-delete", $("#blogFilters")).forEach(button => {
+      button.addEventListener("click", () => {
+        const category = button.dataset.deleteCategory;
+        customCategories = customCategories.filter(item => item !== category);
+        saveCustomCategories();
+        if (currentCategory === category) currentCategory = "全部";
+        renderBlogFilters();
+        renderBlogs();
+      });
+    });
+  }
+
+  function setupCategoryManagement() {
+    const createButton = $("#categoryCreate");
+    if (!createButton) return;
+    createButton.addEventListener("click", () => {
+      const category = window.prompt("新分区名称（例如：技术、想法、书摘）");
+      const name = category && category.trim();
+      if (!name || blogCategories().includes(name)) return;
+      customCategories = [...customCategories, name];
+      saveCustomCategories();
+      currentCategory = name;
+      renderBlogFilters();
+      renderBlogs();
     });
   }
 
@@ -97,6 +160,7 @@
   }
 
   function renderBlogs() {
+    if (!$("#blogList")) return;
     const items = filteredBlogs();
     $("#blogList").innerHTML = items.map(blog => `
       <article class="blog-card" tabindex="0" role="button" data-file="${blog.file}" data-title="${blog.title}" data-date="${blog.date}" aria-label="阅读文章：${blog.title}">
@@ -133,7 +197,11 @@
       const markdown = await response.text();
       content.innerHTML = window.renderMarkdown(markdown);
       const firstHeading = $("h1", content);
-      if (firstHeading) firstHeading.insertAdjacentHTML("afterend", `<p class="markdown-byline">${formatDate(date)}</p>`);
+      if (firstHeading) {
+        firstHeading.insertAdjacentHTML("afterend", `<p class="markdown-byline">${formatDate(date)}</p>`);
+      } else {
+        content.insertAdjacentHTML("afterbegin", `<h1>${title}</h1><p class="markdown-byline">${formatDate(date)}</p>`);
+      }
       content.scrollTop = 0;
     } catch (error) {
       const localHint = location.protocol === "file:"
@@ -150,6 +218,7 @@
   }
 
   function setupDialog() {
+    if (!$("#dialogClose")) return;
     $("#dialogClose").addEventListener("click", closeArticle);
     $("#articleDialog").addEventListener("click", event => {
       if (event.target === $("#articleDialog")) closeArticle();
@@ -158,6 +227,7 @@
   }
 
   function setupSearch() {
+    if (!$("#blogSearch")) return;
     $("#blogSearch").addEventListener("input", event => {
       searchText = event.target.value;
       renderBlogs();
@@ -180,27 +250,31 @@
     backdrop.addEventListener("click", () => setMenu(false));
     $$(".nav-link").forEach(link => link.addEventListener("click", () => setMenu(false)));
 
-    const sections = ["home", "honors", "blogs", "resources"].map(id => document.getElementById(id));
-    const links = $$(".nav-link");
-    const observer = new IntersectionObserver(entries => {
-      const visible = entries.filter(entry => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-      if (!visible) return;
-      links.forEach(link => link.classList.toggle("active", link.getAttribute("href") === `#${visible.target.id}`));
-    }, { rootMargin: "-20% 0px -60%", threshold: [0.05, 0.2, 0.5] });
-    sections.forEach(section => observer.observe(section));
   }
 
   function init() {
     renderProfile();
-    renderAbout();
-    renderHonors();
-    renderResources();
-    renderBlogFilters();
-    renderBlogs();
-    setupSearch();
-    setupDialog();
+    const page = document.body.dataset.page
+      || ($("#aboutGrid") ? "home" : "")
+      || ($("#projectsList") ? "projects" : "")
+      || ($("#resourceList") ? "resources" : "")
+      || ($("#blogList") ? "blogs" : "");
+    if (page === "home") {
+      renderAbout();
+    } else if (page === "projects") {
+      renderProjects();
+    } else if (page === "resources") {
+      renderResources();
+    } else if (page === "blogs") {
+      renderBlogFilters();
+      renderBlogs();
+      setupCategoryManagement();
+      setupSearch();
+      setupDialog();
+    }
     setupNavigation();
-    $("#footerText").textContent = site.footer;
+    const footerText = $("#footerText");
+    if (footerText && site.footer) footerText.textContent = site.footer;
   }
 
   init();
