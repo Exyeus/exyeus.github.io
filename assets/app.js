@@ -1,281 +1,158 @@
 (function () {
   "use strict";
-
-  const site = window.SITE_DATA;
+  const site = window.SITE_DATA || {};
   const blogs = window.BLOG_DATA || [];
-  if (!site) throw new Error("SITE_DATA 未加载，请检查 content/site.js。 ");
-
   const $ = (selector, root = document) => root.querySelector(selector);
-  const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
-  const icon = (name) => `<svg aria-hidden="true"><use href="#icon-${name}"></use></svg>`;
-  const safeIcon = (name) => ["home", "award", "note", "tool", "github", "mail", "link", "arrow", "search", "external", "calendar", "tag"].includes(name) ? name : "link";
-  const isExternal = (url) => /^https?:\/\//i.test(url);
-
-  function renderProfile() {
-    const profile = site.profile;
-    const brandName = $("#brandName");
-    const brandRole = $("#brandRole");
-    if (brandName) brandName.textContent = profile.name;
-    if (brandRole) brandRole.textContent = profile.role;
-
-    const heroName = $("#heroName");
-    if (!heroName) return;
-    document.title = `${profile.name} · Personal Homepage`;
-    $("#heroEyebrow").textContent = profile.eyebrow;
-    heroName.textContent = profile.name;
-    $("#heroIntro").textContent = profile.intro;
-    $("#statusText").textContent = profile.status;
-
-    $("#heroTags").innerHTML = profile.tags.map(tag => `<span class="hero-tag">${tag}</span>`).join("");
-    $("#profileFacts").innerHTML = profile.facts.map(item => `<div><dt>${item.label}</dt><dd>${item.value}</dd></div>`).join("");
-    $("#heroActions").innerHTML = profile.actions.map(action => {
-      const attrs = isExternal(action.url) ? ' target="_blank" rel="noreferrer"' : "";
-      return `<a class="action-button${action.primary ? " primary" : ""}" href="${action.url}"${attrs}>${icon(safeIcon(action.icon))}<span>${action.label}</span></a>`;
-    }).join("");
+  const esc = value => String(value ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const external = url => /^https?:\/\//i.test(url);
+  const safeUrl = value => {
+    if (typeof value !== "string" || !value.trim()) return "";
+    try {
+      const url = new URL(value, location.href);
+      if (["https:", "http:", "mailto:"].includes(url.protocol)) return value;
+      // Relative links remain usable when previewing the static pages locally.
+      if (url.protocol === "file:" && !/^(?:[a-z][a-z0-9+.-]*:|\/\/)/i.test(value)) return value;
+      return "";
+    } catch { return ""; }
+  };
+  const arrow = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>';
+  const outward = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12"/></svg>';
+  const tags = items => (items || []).map(tag => '<span class="tag">' + esc(tag) + '</span>').join("");
+  const linkAttrs = url => external(url) ? ' target="_blank" rel="noopener noreferrer"' : "";
+  const sortedBlogs = () => [...blogs].sort((a, b) => b.date.localeCompare(a.date));
+  const slugOf = blog => blog.slug || blog.file.split("/").pop().replace(/\.md$/i, "");
+  const dateLabel = date => {
+    const d = new Date(date + "T00:00:00");
+    return Number.isNaN(d.getTime()) ? date : new Intl.DateTimeFormat("zh-CN", { year: "numeric", month: "long", day: "numeric" }).format(d);
+  };
+  function articleUrl(blog, filters) {
+    const params = new URLSearchParams({ post: slugOf(blog) });
+    if (filters?.category && filters.category !== "全部") params.set("category", filters.category);
+    if (filters?.q) params.set("q", filters.q);
+    return "article.html?" + params;
   }
-
+  function renderProfile() {
+    const p = site.profile;
+    if (!p || !$("#heroName")) return;
+    $("#heroName").textContent = p.displayName || p.name;
+    $("#heroRomanName").textContent = (p.romanName || "") + " / " + p.name;
+    $("#heroEyebrow").textContent = p.eyebrow;
+    $("#heroIntro").textContent = p.intro;
+    $("#profileFacts").innerHTML = (p.facts || []).map(x => '<div><dt>' + esc(x.label) + '</dt><dd>' + esc(x.value) + '</dd></div>').join("");
+    $("#heroActions").innerHTML = (p.actions || []).map(x => {
+      const url = safeUrl(x.url);
+      return url ? '<a class="button ' + (x.primary ? 'button-primary' : 'button-quiet') + '" href="' + esc(url) + '"' + linkAttrs(url) + '>' + esc(x.label) + (external(url) ? outward : arrow) + '</a>' : "";
+    }).join("");
+    const groups = p.tagGroups || [{ label: "兴趣", tags: p.tags || [] }];
+    $("#interestGroups").innerHTML = groups.map(x => '<div class="interest-group"><h3>' + esc(x.label) + '</h3><div class="tags">' + tags(x.tags) + '</div></div>').join("");
+  }
   function renderAbout() {
     if (!$("#aboutGrid")) return;
-    const items = Array.isArray(site.about) ? site.about : [];
-    $("#aboutGrid").innerHTML = items.map((item, index) => `
-      <article class="about-card">
-        <div class="card-kicker"><span>${item.kicker}</span><span>0${index + 1}</span></div>
-        <h3>${item.title}</h3>
-        <p>${item.text}</p>
-      </article>
-    `).join("");
+    $("#aboutGrid").innerHTML = (site.about || []).map((x, i) => '<article class="focus-item"><div class="item-kicker"><span class="item-number">0' + (i + 1) + '</span>' + esc(x.kicker) + '</div><h3>' + esc(x.title) + '</h3><p>' + esc(x.text) + '</p></article>').join("");
   }
-
+  function renderFeatured() {
+    if (!$("#featuredList")) return;
+    $("#featuredList").innerHTML = (site.featured || []).map((x, i) => {
+      const url = safeUrl(x.url);
+      return '<article class="work-item"><div class="work-index">0' + (i + 1) + '</div><div class="work-body"><p class="item-kicker">' + esc(x.kicker) + '</p><h3>' + (url ? '<a href="' + esc(url) + '"' + linkAttrs(url) + '>' + esc(x.title) + arrow + '</a>' : esc(x.title)) + '</h3><p>' + esc(x.description) + '</p></div><div class="tags work-tags">' + tags(x.tags) + '</div></article>';
+    }).join("");
+  }
   function renderProjects() {
     if (!$("#projectsList")) return;
-    const items = Array.isArray(site.projects) ? site.projects : (site.honors || []);
-    $("#projectsList").innerHTML = items.map(item => `
-      <article class="timeline-item">
-        <div class="timeline-year">${item.year}</div>
-        <div class="timeline-body"><h3>${item.title}</h3><p>${item.description}</p></div>
-        <span class="timeline-badge">${item.badge}</span>
-      </article>
-    `).join("");
+    $("#projectsList").innerHTML = (site.projects || []).map((x, i) => '<article class="timeline-item" id="' + esc(x.id || 'experience-' + (i + 1)) + '"><div class="timeline-year">' + esc(x.year) + '</div><div class="timeline-body"><h2>' + esc(x.title) + '</h2>' + (x.description ? '<p>' + esc(x.description) + '</p>' : '') + '<span class="badge">' + esc(x.badge) + '</span></div></article>').join("");
   }
-
   function renderResources() {
-    if (!$("#resourceList")) return;
-    const items = Array.isArray(site.resources) ? site.resources : [];
-    $("#resourceList").innerHTML = items.map(item => {
-      const attrs = isExternal(item.url) ? ' target="_blank" rel="noreferrer"' : "";
-      return `<a class="resource-card" href="${item.url}"${attrs}>
-        <span class="resource-icon">${icon(safeIcon(item.icon))}</span>
-        <h3>${item.title}</h3>
-        <p>${item.description}</p>
-        <div class="resource-bottom"><span>${item.type}</span><span>Open ${icon(isExternal(item.url) ? "external" : "arrow")}</span></div>
-      </a>`;
-    }).join("");
-  }
-
-  let currentCategory = "全部";
-  let searchText = "";
-  const customCategoryStorageKey = "tim-homepage-blog-custom-categories";
-
-  function escapeHtml(value) {
-    return String(value).replace(/[&<>"]/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[character]);
-  }
-
-  function loadCustomCategories() {
-    try {
-      const value = JSON.parse(window.localStorage.getItem(customCategoryStorageKey) || "[]");
-      return Array.isArray(value) ? value.filter(item => typeof item === "string" && item.trim()) : [];
-    } catch {
-      return [];
-    }
-  }
-
-  let customCategories = loadCustomCategories();
-
-  function saveCustomCategories() {
-    try {
-      window.localStorage.setItem(customCategoryStorageKey, JSON.stringify(customCategories));
-    } catch {
-      // 本地存储不可用时，当前页面内仍可使用新建的分区。
-    }
-  }
-
-  function blogCategories() {
-    const configured = Array.isArray(window.BLOG_SECTIONS) ? window.BLOG_SECTIONS : [];
-    return ["全部", ...new Set([...configured, ...customCategories, ...blogs.map(blog => blog.category)].filter(Boolean))];
-  }
-
-  function renderBlogFilters() {
-    if (!$("#blogFilters")) return;
-    $("#blogFilters").innerHTML = blogCategories().map(category => {
-      const custom = customCategories.includes(category);
-      return `<span class="filter-pill-group"><button class="filter-pill${category === currentCategory ? " active" : ""}" type="button" data-category="${escapeHtml(category)}">${escapeHtml(category)}</button>${custom ? `<button class="filter-delete" type="button" data-delete-category="${escapeHtml(category)}" aria-label="删除分区 ${escapeHtml(category)}">×</button>` : ""}</span>`;
-    }).join("");
-    $$(".filter-pill", $("#blogFilters")).forEach(button => {
-      button.addEventListener("click", () => {
-        currentCategory = button.dataset.category;
-        renderBlogFilters();
-        renderBlogs();
-      });
-    });
-    $$(".filter-delete", $("#blogFilters")).forEach(button => {
-      button.addEventListener("click", () => {
-        const category = button.dataset.deleteCategory;
-        customCategories = customCategories.filter(item => item !== category);
-        saveCustomCategories();
-        if (currentCategory === category) currentCategory = "全部";
-        renderBlogFilters();
-        renderBlogs();
-      });
-    });
-  }
-
-  function setupCategoryManagement() {
-    const createButton = $("#categoryCreate");
-    if (!createButton) return;
-    createButton.addEventListener("click", () => {
-      const category = window.prompt("新分区名称（例如：技术、想法、书摘）");
-      const name = category && category.trim();
-      if (!name || blogCategories().includes(name)) return;
-      customCategories = [...customCategories, name];
-      saveCustomCategories();
-      currentCategory = name;
-      renderBlogFilters();
-      renderBlogs();
-    });
-  }
-
-  function formatDate(date) {
-    const value = new Date(`${date}T00:00:00`);
-    if (Number.isNaN(value.getTime())) return date;
-    return new Intl.DateTimeFormat("zh-CN", { year: "numeric", month: "short", day: "numeric" }).format(value);
-  }
-
-  function filteredBlogs() {
-    const query = searchText.trim().toLowerCase();
-    return blogs.filter(blog => {
-      const matchesCategory = currentCategory === "全部" || blog.category === currentCategory;
-      const haystack = [blog.title, blog.summary, blog.category, ...(blog.tags || [])].join(" ").toLowerCase();
-      return matchesCategory && (!query || haystack.includes(query));
-    }).sort((a, b) => b.date.localeCompare(a.date));
-  }
-
-  function renderBlogs() {
-    if (!$("#blogList")) return;
-    const items = filteredBlogs();
-    $("#blogList").innerHTML = items.map(blog => `
-      <article class="blog-card" tabindex="0" role="button" data-file="${blog.file}" data-title="${blog.title}" data-date="${blog.date}" aria-label="阅读文章：${blog.title}">
-        <div class="blog-meta"><span>${icon("calendar")}${formatDate(blog.date)}</span><span>${blog.category}</span></div>
-        <h3>${blog.title}</h3>
-        <p>${blog.summary}</p>
-        <div class="blog-footer"><div class="blog-tags">${(blog.tags || []).map(tag => `<span>#${tag}</span>`).join("")}</div><span class="blog-open">${icon("arrow")}</span></div>
-      </article>
-    `).join("");
-    $("#blogEmpty").hidden = items.length !== 0;
-
-    $$(".blog-card", $("#blogList")).forEach(card => {
-      const open = () => openArticle(card.dataset.file, card.dataset.title, card.dataset.date);
-      card.addEventListener("click", open);
-      card.addEventListener("keydown", event => {
-        if (event.key === "Enter" || event.key === " ") {
-          event.preventDefault();
-          open();
-        }
-      });
-    });
-  }
-
-  async function openArticle(file, title, date) {
-    const dialog = $("#articleDialog");
-    const content = $("#articleContent");
-    content.innerHTML = `<h1>${title}</h1><p class="markdown-byline">${formatDate(date)}</p><p>正在读取文章…</p>`;
-    dialog.showModal();
-    document.body.style.overflow = "hidden";
-
-    try {
-      const response = await fetch(file, { cache: "no-cache" });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      const markdown = await response.text();
-      content.innerHTML = window.renderMarkdown(markdown);
-      const firstHeading = $("h1", content);
-      if (firstHeading) {
-        firstHeading.insertAdjacentHTML("afterend", `<p class="markdown-byline">${formatDate(date)}</p>`);
-      } else {
-        content.insertAdjacentHTML("afterbegin", `<h1>${title}</h1><p class="markdown-byline">${formatDate(date)}</p>`);
-      }
-      content.scrollTop = 0;
-    } catch (error) {
-      const localHint = location.protocol === "file:"
-        ? "你正在直接双击 index.html。浏览器会阻止读取 Markdown 文件，请在目录中运行 python -m http.server 8000，再访问 http://localhost:8000。"
-        : "请检查文章文件路径以及文件是否已经提交到仓库。";
-      content.innerHTML = `<h1>${title}</h1><p class="markdown-byline">${formatDate(date)}</p><p>文章读取失败。</p><blockquote><p>${localHint}</p></blockquote><p><code>${String(error.message)}</code></p>`;
-    }
-  }
-
-  function closeArticle() {
-    const dialog = $("#articleDialog");
-    if (dialog.open) dialog.close();
-    document.body.style.overflow = "";
-  }
-
-  function setupDialog() {
-    if (!$("#dialogClose")) return;
-    $("#dialogClose").addEventListener("click", closeArticle);
-    $("#articleDialog").addEventListener("click", event => {
-      if (event.target === $("#articleDialog")) closeArticle();
-    });
-    $("#articleDialog").addEventListener("close", () => { document.body.style.overflow = ""; });
-  }
-
-  function setupSearch() {
-    if (!$("#blogSearch")) return;
-    $("#blogSearch").addEventListener("input", event => {
-      searchText = event.target.value;
-      renderBlogs();
-    });
-  }
-
-  function setupNavigation() {
-    const sidebar = $("#sidebar");
-    const backdrop = $("#sidebarBackdrop");
-    const menuButton = $("#mobileMenuButton");
-
-    const setMenu = (open) => {
-      sidebar.classList.toggle("open", open);
-      backdrop.classList.toggle("show", open);
-      menuButton.setAttribute("aria-expanded", String(open));
-      menuButton.innerHTML = icon(open ? "close" : "menu");
+    const list = $("#resourceList");
+    if (!list) return;
+    const items = site.resources || [];
+    let category = "全部";
+    const filters = $("#resourceFilters");
+    const categories = ["全部", ...new Set(items.map(x => x.category || x.type).filter(Boolean))];
+    filters.innerHTML = categories.map(name => '<button type="button" class="filter-pill" data-category="' + esc(name) + '" aria-pressed="' + (name === category) + '">' + esc(name) + '</button>').join("");
+    const render = () => {
+      list.innerHTML = items.filter(x => category === "全部" || (x.category || x.type) === category).map((x, i) => {
+        const url = safeUrl(x.url);
+        return '<article class="resource-card" id="' + esc(x.id || 'tool-' + (i + 1)) + '"><div class="resource-top"><span class="resource-monogram" aria-hidden="true">' + (x.category === "Obsidian" ? "O" : x.id === "chatgpt-reading-progress" ? "C" : "W") + '<span>·</span></span><span class="resource-type">' + esc(x.category || x.type) + '</span>' + (x.status ? '<span class="resource-status"><i aria-hidden="true"></i>' + esc(x.status) + '</span>' : '') + '</div><h2>' + esc(x.title) + '</h2><p class="resource-description">' + esc(x.description) + '</p><div class="tags">' + tags(x.tags) + '</div><div class="resource-bottom">' + (url ? '<a class="text-link" href="' + esc(url) + '"' + linkAttrs(url) + '>查看项目' + outward + '</a>' : '<span class="release-note">' + esc(x.note || "发布入口待补充") + '</span>') + '<span class="resource-platform">' + esc(x.type) + '</span></div></article>';
+      }).join("");
+      filters.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.category === category)));
+      $("#resourceCount").textContent = list.children.length + " 个工具";
     };
-
-    menuButton.addEventListener("click", () => setMenu(!sidebar.classList.contains("open")));
-    backdrop.addEventListener("click", () => setMenu(false));
-    $$(".nav-link").forEach(link => link.addEventListener("click", () => setMenu(false)));
-
+    filters.addEventListener("click", e => {
+      const b = e.target.closest("button[data-category]");
+      if (b) { category = b.dataset.category; render(); }
+    });
+    render();
   }
-
-  function init() {
-    renderProfile();
-    const page = document.body.dataset.page
-      || ($("#aboutGrid") ? "home" : "")
-      || ($("#projectsList") ? "projects" : "")
-      || ($("#resourceList") ? "resources" : "")
-      || ($("#blogList") ? "blogs" : "");
-    if (page === "home") {
-      renderAbout();
-    } else if (page === "projects") {
-      renderProjects();
-    } else if (page === "resources") {
-      renderResources();
-    } else if (page === "blogs") {
-      renderBlogFilters();
-      renderBlogs();
-      setupCategoryManagement();
-      setupSearch();
-      setupDialog();
-    }
-    setupNavigation();
-    const footerText = $("#footerText");
-    if (footerText && site.footer) footerText.textContent = site.footer;
+  function blogRow(blog, compact = false, filters) {
+    const h = compact ? "3" : "2";
+    return '<article class="blog-row' + (compact ? ' compact' : '') + '"><div class="blog-date"><time datetime="' + esc(blog.date) + '">' + esc(dateLabel(blog.date)) + '</time><span>' + esc(blog.category) + '</span></div><div class="blog-body"><h' + h + '><a href="' + esc(articleUrl(blog, filters)) + '">' + esc(blog.title) + arrow + '</a></h' + h + '>' + (!compact ? '<p>' + esc(blog.summary) + '</p><div class="tags">' + tags(blog.tags) + '</div>' : '') + '</div></article>';
   }
-
-  init();
+  function renderLatest() {
+    if ($("#latestPosts")) $("#latestPosts").innerHTML = sortedBlogs().slice(0, 3).map(x => blogRow(x, true)).join("");
+  }
+  function setupBlogIndex() {
+    if (!$("#blogList")) return;
+    const params = new URLSearchParams(location.search);
+    const categories = ["全部", ...new Set([...(window.BLOG_SECTIONS || []), ...blogs.map(x => x.category)].filter(Boolean))];
+    let category = params.get("category") || "全部";
+    if (!categories.includes(category)) category = "全部";
+    let q = params.get("q") || "";
+    $("#blogSearch").value = q;
+    $("#blogFilters").innerHTML = categories.map(name => '<button type="button" class="filter-pill" data-category="' + esc(name) + '" aria-pressed="' + (name === category) + '">' + esc(name) + '</button>').join("");
+    const render = (updateUrl = true) => {
+      const term = q.trim().toLocaleLowerCase();
+      const items = sortedBlogs().filter(x => (category === "全部" || x.category === category) && [x.title, x.summary, x.category, ...(x.tags || [])].join(" ").toLocaleLowerCase().includes(term));
+      $("#blogList").innerHTML = items.map(x => blogRow(x, false, { category, q })).join("");
+      $("#blogEmpty").hidden = items.length > 0;
+      $("#blogCount").textContent = items.length + " 篇文章";
+      $("#blogFilters").querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.category === category)));
+      if (updateUrl) {
+        const url = new URL(location.href);
+        if (category !== "全部") url.searchParams.set("category", category); else url.searchParams.delete("category");
+        if (q) url.searchParams.set("q", q); else url.searchParams.delete("q");
+        history.replaceState(null, "", url);
+      }
+    };
+    $("#blogSearch").addEventListener("input", e => { q = e.target.value; render(); });
+    $("#blogFilters").addEventListener("click", e => {
+      const b = e.target.closest("button[data-category]");
+      if (b) { category = b.dataset.category; render(); }
+    });
+    $("#clearBlogFilters").addEventListener("click", () => { q = ""; category = "全部"; $("#blogSearch").value = ""; render(); $("#blogSearch").focus(); });
+    window.addEventListener("pageshow", () => {
+      const p = new URLSearchParams(location.search);
+      q = p.get("q") || "";
+      category = categories.includes(p.get("category")) ? p.get("category") : "全部";
+      $("#blogSearch").value = q;
+      render(false);
+    });
+    render(false);
+  }
+  function setupTheme() {
+    const button = $("#themeToggle");
+    if (!button) return;
+    const update = () => {
+      const dark = document.documentElement.dataset.theme === "dark";
+      button.setAttribute("aria-pressed", String(dark));
+      button.setAttribute("aria-label", dark ? "切换为浅色主题" : "切换为深色主题");
+      button.title = dark ? "切换为浅色主题" : "切换为深色主题";
+      const meta = $('meta[name="theme-color"]');
+      if (meta) meta.content = dark ? "#19211e" : "#fafbf8";
+    };
+    button.addEventListener("click", () => {
+      const theme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+      document.documentElement.dataset.theme = theme;
+      try { localStorage.setItem("tim-homepage-theme", theme); } catch { /* Works without storage. */ }
+      update();
+    });
+    update();
+  }
+  renderProfile();
+  renderAbout();
+  renderFeatured();
+  renderProjects();
+  renderResources();
+  renderLatest();
+  setupBlogIndex();
+  setupTheme();
 })();

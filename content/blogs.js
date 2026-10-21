@@ -10,6 +10,7 @@ window.BLOG_SECTIONS = ["技术", "想法", "书摘"];
 
 window.BLOG_DATA = [
   {
+    slug: "zero-build-homepage",
     title: "这个主页为什么坚持零构建",
     date: "2026-08-05",
     category: "Project",
@@ -18,6 +19,7 @@ window.BLOG_DATA = [
     file: "content/blogs/zero-build-homepage.md"
   },
   {
+    slug: "dbms-competition-2026",
     title: "系统能力大赛2026-DBMS赛道参赛总结",
     date: "2026-08-23",
     category: "技术",

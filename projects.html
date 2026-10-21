@@ -1,44 +1,38 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="light">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="T_IM 的项目经历。" />
-  <meta name="theme-color" content="#24271E" />
-  <title>T_IM · 项目经历</title>
-  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="assets/styles.css" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="description" content="T_IM 的数据库系统、Liteasy、超级计算及跨学科实践。"/>
+  <meta name="theme-color" content="#fafbf8"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta property="og:title" content="项目与经历 · T_IM"/>
+  <meta property="og:description" content="T_IM 的数据库系统、Liteasy、超级计算及跨学科实践。"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:url" content="https://exyeus.github.io/projects.html"/>
+  <meta property="og:locale" content="zh_CN"/>
+  <link rel="canonical" href="https://exyeus.github.io/projects.html"/>
+  <title>项目与经历 · T_IM</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml"/>
+  <script>try { document.documentElement.dataset.theme = localStorage.getItem('tim-homepage-theme') === 'dark' ? 'dark' : 'light'; } catch {}</script>
+  <link rel="stylesheet" href="assets/styles.css"/>
+  <script src="content/site.js" defer></script>
+  <script src="content/blogs.js" defer></script>
+  <script src="assets/app.js" defer></script>
 </head>
 <body data-page="projects">
-  <svg class="svg-sprite" aria-hidden="true">
-    <symbol id="icon-home" viewBox="0 0 24 24"><path d="M3.5 10.7 12 3.8l8.5 6.9v8.1a1.7 1.7 0 0 1-1.7 1.7H5.2a1.7 1.7 0 0 1-1.7-1.7z"/><path d="M9.2 20.5v-6.1h5.6v6.1"/></symbol>
-    <symbol id="icon-award" viewBox="0 0 24 24"><circle cx="12" cy="8.3" r="5.2"/><path d="m8.8 12.6-1 8 4.2-2.4 4.2 2.4-1-8"/><path d="m10.1 8.2 1.3 1.3 2.8-2.8"/></symbol>
-    <symbol id="icon-note" viewBox="0 0 24 24"><path d="M6 3.5h9.2l3.8 3.8v13.2H6z"/><path d="M15 3.8v4h3.8M9 12h6M9 15.5h6"/></symbol>
-    <symbol id="icon-tool" viewBox="0 0 24 24"><path d="M14.7 6.1a4.4 4.4 0 0 0-5.8 5.8L3.7 17a2.3 2.3 0 0 0 3.3 3.3l5.1-5.2a4.4 4.4 0 0 0 5.8-5.8l-2.6 2.5-2.7-.5-.5-2.7z"/></symbol>
-    <symbol id="icon-arrow" viewBox="0 0 24 24"><path d="M5 12h14M14 7l5 5-5 5"/></symbol>
-    <symbol id="icon-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
-    <symbol id="icon-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
-  </svg>
-  <button class="mobile-menu-button" id="mobileMenuButton" aria-label="打开导航" aria-expanded="false"><svg><use href="#icon-menu"></use></svg></button>
-  <aside class="sidebar" id="sidebar">
-    <div class="brand"><a href="index.html" class="brand-mark" aria-label="返回首页">T</a><div><strong id="brandName">T_IM</strong><span id="brandRole">CS Undergraduate</span></div></div>
-    <nav class="primary-nav" aria-label="主导航">
-      <a href="index.html" class="nav-link"><svg><use href="#icon-home"></use></svg><span>个人信息</span></a>
-      <a href="blogs.html" class="nav-link"><svg><use href="#icon-note"></use></svg><span>Blogs</span></a>
-      <a href="resources.html" class="nav-link"><svg><use href="#icon-tool"></use></svg><span>资源工具</span></a>
-      <a href="projects.html" class="nav-link active"><svg><use href="#icon-award"></use></svg><span>项目经历</span></a>
-    </nav>
-    <div class="sidebar-footer"><p>Plain HTML · Zero build</p><a href="README.md">编辑说明 <svg><use href="#icon-arrow"></use></svg></a></div>
-  </aside>
-  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
-  <main class="main-shell">
-    <section class="page-section content-section standalone-section" id="projects">
-      <div class="section-heading"><div><span class="section-index">01</span><h2>项目经历</h2></div><p>项目、实践与阶段性成果。</p></div>
-      <div class="timeline" id="projectsList"></div>
-    </section>
-    <footer><span id="footerText">Built with plain HTML, CSS and JavaScript.</span><a href="index.html">Home <svg><use href="#icon-arrow"></use></svg></a></footer>
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="site-header">
+    <div class="header-inner container">
+      <a class="brand" href="index.html" aria-label="T_IM · 返回首页"><span class="brand-word">T_IM<span class="brand-dot">.</span></span><span class="brand-caption">学习 · 思考 · 构建</span></a>
+      <nav class="primary-nav" aria-label="主导航"><a href="index.html">关于</a><a href="blogs.html">文章</a><a href="resources.html">工具</a><a href="projects.html" aria-current="page">经历</a></nav>
+      <div class="header-actions"><a class="header-github" href="https://github.com/Exyeus" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a><button class="theme-toggle" id="themeToggle" type="button" aria-label="切换为深色主题" aria-pressed="false"><svg class="theme-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 13A8.5 8.5 0 0 1 11 3.5 8.5 8.5 0 1 0 20.5 13Z"/></svg><svg class="theme-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg></button></div>
+    </div>
+  </header>
+  <main id="main" class="container main-content" tabindex="-1">
+    <header class="page-heading"><p class="eyebrow">LEARNING BY BUILDING</p><h1>项目与经历<span class="heading-period">.</span></h1><p>在实践中理解系统，在协作中完成有用的事情。</p></header><section class="timeline index-section" id="projectsList" aria-label="项目与经历时间线"></section>
+    <noscript><p class="noscript-note">此页的目录与工具列表需要 JavaScript。你也可以在 <a href="https://github.com/Exyeus/exyeus.github.io/tree/main/content">GitHub 阅读原始内容</a>。</p></noscript>
   </main>
-  <script src="content/site.js"></script>
-  <script src="assets/app.js?v=20260826-6"></script>
+  <footer class="site-footer container"><div><a href="index.html" class="footer-name">T_IM<span class="brand-dot">.</span></a><span>保持好奇，认真做事。</span></div><a href="#main" class="back-top">回到顶部 <span aria-hidden="true">↑</span></a></footer>
 </body>
 </html>

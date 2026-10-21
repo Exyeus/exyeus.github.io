@@ -1,86 +1,66 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="light">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="T_IM 的个人主页：计算机科学、数据库系统、Agent Memory 与个人项目。" />
-  <meta name="theme-color" content="#24271E" />
-  <title>T_IM · Personal Homepage</title>
-  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="assets/styles.css" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="description" content="田家铭（T_IM），中国人民大学计算机科学本科生。关注 Data Infra、数据库系统、Agent Memory，制作阅读与知识管理工具。"/>
+  <meta name="theme-color" content="#fafbf8"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta property="og:title" content="田家铭 T_IM · Data Infra &amp; Computer Systems"/>
+  <meta property="og:description" content="田家铭（T_IM），中国人民大学计算机科学本科生。关注 Data Infra、数据库系统、Agent Memory，制作阅读与知识管理工具。"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:url" content="https://exyeus.github.io/"/>
+  <meta property="og:locale" content="zh_CN"/>
+  <link rel="canonical" href="https://exyeus.github.io/"/>
+  <title>田家铭 T_IM · Data Infra &amp; Computer Systems</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml"/>
+  <script>try { document.documentElement.dataset.theme = localStorage.getItem('tim-homepage-theme') === 'dark' ? 'dark' : 'light'; } catch {}</script>
+  <link rel="stylesheet" href="assets/styles.css"/>
+  <script src="content/site.js" defer></script>
+  <script src="content/blogs.js" defer></script>
+  <script src="assets/app.js" defer></script>
 </head>
 <body data-page="home">
-  <svg class="svg-sprite" aria-hidden="true">
-    <symbol id="icon-home" viewBox="0 0 24 24"><path d="M3.5 10.7 12 3.8l8.5 6.9v8.1a1.7 1.7 0 0 1-1.7 1.7H5.2a1.7 1.7 0 0 1-1.7-1.7z"/><path d="M9.2 20.5v-6.1h5.6v6.1"/></symbol>
-    <symbol id="icon-award" viewBox="0 0 24 24"><circle cx="12" cy="8.3" r="5.2"/><path d="m8.8 12.6-1 8 4.2-2.4 4.2 2.4-1-8"/><path d="m10.1 8.2 1.3 1.3 2.8-2.8"/></symbol>
-    <symbol id="icon-note" viewBox="0 0 24 24"><path d="M6 3.5h9.2l3.8 3.8v13.2H6z"/><path d="M15 3.8v4h3.8M9 12h6M9 15.5h6"/></symbol>
-    <symbol id="icon-tool" viewBox="0 0 24 24"><path d="M14.7 6.1a4.4 4.4 0 0 0-5.8 5.8L3.7 17a2.3 2.3 0 0 0 3.3 3.3l5.1-5.2a4.4 4.4 0 0 0 5.8-5.8l-2.6 2.5-2.7-.5-.5-2.7z"/></symbol>
-    <symbol id="icon-github" viewBox="0 0 24 24"><path d="M12 2.8a9.2 9.2 0 0 0-2.9 17.9v-2.2c-2.4.5-2.9-1-2.9-1-.4-1-.9-1.3-.9-1.3-.8-.5 0-.5 0-.5.8.1 1.3.9 1.3.9.7 1.3 1.9.9 2.4.7.1-.6.3-1 .6-1.2-1.9-.2-3.9-1-3.9-4.1 0-.9.3-1.7.8-2.3-.1-.2-.4-1.1.1-2.3 0 0 .7-.2 2.5.9a8.6 8.6 0 0 1 4.5 0c1.7-1.1 2.5-.9 2.5-.9.5 1.2.2 2.1.1 2.3.5.6.8 1.4.8 2.3 0 3.2-1.9 3.9-3.9 4.1.3.3.6.8.6 1.6v3a9.2 9.2 0 0 0-2.9-17.9Z"/></symbol>
-    <symbol id="icon-mail" viewBox="0 0 24 24"><rect x="3.5" y="5.2" width="17" height="13.6" rx="2"/><path d="m4.5 7 7.5 5.7L19.5 7"/></symbol>
-    <symbol id="icon-link" viewBox="0 0 24 24"><path d="m9.5 14.5 5-5M8.2 17.8l-1 1a3.5 3.5 0 1 1-5-5l3.5-3.5a3.5 3.5 0 0 1 5 0M15.8 6.2l1-1a3.5 3.5 0 1 1 5 5l-3.5 3.5a3.5 3.5 0 0 1-5 0"/></symbol>
-    <symbol id="icon-arrow" viewBox="0 0 24 24"><path d="M5 12h14M14 7l5 5-5 5"/></symbol>
-    <symbol id="icon-search" viewBox="0 0 24 24"><circle cx="10.7" cy="10.7" r="6.7"/><path d="m15.7 15.7 4.3 4.3"/></symbol>
-    <symbol id="icon-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
-    <symbol id="icon-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
-    <symbol id="icon-external" viewBox="0 0 24 24"><path d="M13 5h6v6M19 5l-8 8"/><path d="M18 14v4.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 4 18.5v-11A1.5 1.5 0 0 1 5.5 6H10"/></symbol>
-    <symbol id="icon-calendar" viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="17" height="15" rx="2"/><path d="M7.5 3v5M16.5 3v5M3.5 10h17"/></symbol>
-    <symbol id="icon-tag" viewBox="0 0 24 24"><path d="M3.5 5.5v6.2l8.8 8.8 8.2-8.2-8.8-8.8H5.5a2 2 0 0 0-2 2Z"/><circle cx="8" cy="8" r="1.2"/></symbol>
-  </svg>
-
-  <button class="mobile-menu-button" id="mobileMenuButton" aria-label="打开导航" aria-expanded="false">
-    <svg><use href="#icon-menu"></use></svg>
-  </button>
-
-  <aside class="sidebar" id="sidebar">
-    <div class="brand">
-      <a href="#home" class="brand-mark" aria-label="返回首页">T</a>
-      <div><strong id="brandName">T_IM</strong><span id="brandRole">CS Undergraduate</span></div>
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="site-header">
+    <div class="header-inner container">
+      <a class="brand" href="index.html" aria-label="T_IM · 返回首页"><span class="brand-word">T_IM<span class="brand-dot">.</span></span><span class="brand-caption">学习 · 思考 · 构建</span></a>
+      <nav class="primary-nav" aria-label="主导航"><a href="index.html" aria-current="page">关于</a><a href="blogs.html">文章</a><a href="resources.html">工具</a><a href="projects.html">经历</a></nav>
+      <div class="header-actions"><a class="header-github" href="https://github.com/Exyeus" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a><button class="theme-toggle" id="themeToggle" type="button" aria-label="切换为深色主题" aria-pressed="false"><svg class="theme-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 13A8.5 8.5 0 0 1 11 3.5 8.5 8.5 0 1 0 20.5 13Z"/></svg><svg class="theme-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg></button></div>
     </div>
-    <nav class="primary-nav" aria-label="主导航">
-      <a href="index.html" class="nav-link active"><svg><use href="#icon-home"></use></svg><span>个人信息</span></a>
-      <a href="blogs.html" class="nav-link"><svg><use href="#icon-note"></use></svg><span>Blogs</span></a>
-      <a href="resources.html" class="nav-link"><svg><use href="#icon-tool"></use></svg><span>资源工具</span></a>
-      <a href="projects.html" class="nav-link"><svg><use href="#icon-award"></use></svg><span>项目经历</span></a>
-    </nav>
-    <div class="sidebar-footer">
-      <p>Plain HTML · Zero build</p>
-      <a href="README.md">编辑说明 <svg><use href="#icon-arrow"></use></svg></a>
-    </div>
-  </aside>
-  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
-
-  <main class="main-shell">
-    <section class="hero page-section" id="home">
+  </header>
+  <main id="main" class="container main-content" tabindex="-1">
+    <section class="hero" aria-labelledby="heroName">
       <div class="hero-copy">
-        <p class="eyebrow" id="heroEyebrow">HELLO, I AM</p>
-        <h1 id="heroName">T_IM</h1>
-        <p class="hero-intro" id="heroIntro"></p>
-        <div class="hero-actions" id="heroActions"></div>
-        <div class="hero-tags" id="heroTags"></div>
+        <p class="eyebrow hero-eyebrow" id="heroEyebrow">COMPUTER SCIENCE · RUC</p>
+        <h1 id="heroName">田家铭</h1>
+        <p class="hero-roman" id="heroRomanName">Jiaming Tian / T_IM</p>
+        <p class="hero-intro" id="heroIntro">在中国人民大学学习计算机科学，关注 Data Infra、数据库与计算机系统。从真实的数据问题出发，探索更可靠、高效的系统，也做一些让阅读与学习更顺手的小工具。</p>
+        <div class="hero-actions" id="heroActions"><a class="button button-primary" href="https://github.com/Exyeus">GitHub ↗</a><a class="button button-quiet" href="resources.html">我的工具 →</a></div>
       </div>
-      <div class="profile-panel glass-panel">
-        <div class="profile-avatar" id="profileAvatar">
-          <img src="assets/avatar.jpg" alt="T_IM 的头像" />
-        </div>
-        <div class="profile-meta">
-          <span class="status-dot"></span><span id="statusText">Open to learning & collaboration</span>
-        </div>
-        <dl id="profileFacts"></dl>
-      </div>
+      <aside class="profile-aside" aria-label="个人信息">
+        <figure class="profile-photo"><img src="assets/avatar.jpg" width="220" height="220" alt="T_IM 的个人头像" fetchpriority="high"/></figure>
+        <p class="profile-caption"><span class="status-dot" aria-hidden="true"></span>保持好奇，持续构建。</p>
+        <dl id="profileFacts"><div><dt>学校</dt><dd>中国人民大学</dd></div><div><dt>专业</dt><dd>计算机科学</dd></div></dl>
+      </aside>
     </section>
-
-    <section class="page-section content-section" id="about">
-      <div class="section-heading"><div><span class="section-index">01</span><h2>关于我</h2></div><p>我当前关注的主题、能力结构与长期方向。</p></div>
-      <div class="about-grid" id="aboutGrid"></div>
+    <section class="interests" aria-labelledby="interestsTitle">
+      <h2 class="visually-hidden" id="interestsTitle">我的兴趣</h2><div id="interestGroups" class="interest-groups"></div>
     </section>
-
-    <footer>
-      <span id="footerText">Built with plain HTML, CSS and JavaScript.</span>
-      <a href="#home">Back to top <svg><use href="#icon-arrow"></use></svg></a>
-    </footer>
+    <section class="home-section" id="about" aria-labelledby="focusTitle">
+      <div class="section-heading"><div><p class="eyebrow">A FEW THINGS ON MY MIND</p><h2 id="focusTitle">正在关注</h2></div><span class="section-note">把好奇心放进真实的问题里。</span></div>
+      <div class="focus-grid" id="aboutGrid"></div>
+    </section>
+    <section class="home-section" aria-labelledby="workTitle">
+      <div class="section-heading"><div><p class="eyebrow">SELECTED WORK</p><h2 id="workTitle">从想法到实践</h2></div><a class="text-link" href="projects.html">全部经历 →</a></div>
+      <div class="featured-list" id="featuredList"></div>
+    </section>
+    <section class="home-section last-section" aria-labelledby="writingTitle">
+      <div class="section-heading"><div><p class="eyebrow">NOTES & REFLECTIONS</p><h2 id="writingTitle">最近写下</h2></div><a class="text-link" href="blogs.html">全部文章 →</a></div>
+      <div id="latestPosts" class="blog-list"></div>
+    </section>
+    <noscript><p class="noscript-note">此页的目录与工具列表需要 JavaScript。你也可以在 <a href="https://github.com/Exyeus/exyeus.github.io/tree/main/content">GitHub 阅读原始内容</a>。</p></noscript>
   </main>
-
-  <script src="content/site.js"></script>
-  <script src="assets/app.js?v=20260826-6"></script>
+  <footer class="site-footer container"><div><a href="index.html" class="footer-name">T_IM<span class="brand-dot">.</span></a><span>保持好奇，认真做事。</span></div><a href="#main" class="back-top">回到顶部 <span aria-hidden="true">↑</span></a></footer>
 </body>
 </html>

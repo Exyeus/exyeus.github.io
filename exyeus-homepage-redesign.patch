@@ -1,0 +1,2548 @@
+diff --git a/README.md b/README.md
+index fff7db68a028cf6703b6918b3607eba44602482c..c771f78059908cd0a07db62409889c45f57dae06 100644
+--- a/README.md
++++ b/README.md
+@@ -1,134 +1,93 @@
+-# T_IM Personal Homepage
+-
+-一个完全静态、零构建的 GitHub 个人主页。它只使用 HTML、CSS 和原生 JavaScript，不需要 Node.js、npm、pnpm、打包器或 GitHub Actions。
+-
+-## 目录结构
+-
+-```text
+-.
+-├── index.html                 # 个人信息页
+-├── projects.html              # 项目经历页
+-├── blogs.html                 # 博客页
+-├── resources.html             # 资源工具页
+-├── .nojekyll                  # 让 GitHub Pages 原样发布静态文件
+-├── assets/
+-│   ├── styles.css             # 全部视觉样式
+-│   ├── app.js                 # 页面渲染、搜索、导航和文章弹窗
+-│   ├── markdown.js            # 内置的轻量 Markdown 渲染器
+-│   └── favicon.svg
+-└── content/
+-    ├── site.js                # 个人信息、项目经历、关于我、资源工具
+-    ├── blogs.js               # 博客元数据目录
+-    └── blogs/*.md             # 博客正文
+-```
+-
+-## 本地预览
+-
+-Markdown 文件通过浏览器 `fetch` 读取，因此不要直接双击 `index.html`。在项目目录执行：
+-
+-```bash
+-python -m http.server 8000
+-```
+-
+-然后访问：
+-
+-```text
+-http://localhost:8000
+-```
+-
+-Python 3 通常已经预装在 Linux 与多数开发环境中。也可以使用 VS Code 的 Live Server 扩展。
+-
+-## 修改个人信息
++# T_IM · Personal Homepage
+ 
+-打开 `content/site.js`。其中所有内容均为普通 JavaScript 对象：
++田家铭（T_IM）的个人主页。暖白与灰绿色主题，以个人介绍、研究兴趣、实践与文章为主，支持手机布局与手动深色主题。
+ 
+-- `profile`：姓名、介绍、标签、按钮和基本信息；
+-- `about`：关于我的主题卡片；
+-- `projects`：项目、竞赛、证书和阶段性成果；
+-- `resources`：项目、工具和资源链接；
+-- `footer`：页脚文字。
++## 本地预览
+ 
+-复制数组中的一个 `{ ... }` 对象即可增加条目，删除对象即可移除条目。注意相邻对象之间要保留英文逗号。
++在仓库根目录运行 `python -m http.server 8000`，浏览器打开 `http://localhost:8000`。使用 VS Code Live Server 也可以。文章正文通过 `fetch` 读取，完整预览请使用 HTTP 服务，不要直接双击文章页。
+ 
+-保存后直接刷新对应页面即可预览：个人信息在 `index.html`、项目经历在 `projects.html`、资源工具在 `resources.html`。这些页面都从同一个 `content/site.js` 读取数据，不需要重复编辑 HTML。
++本站继续使用 HTML、CSS 与原生 JavaScript，不需要 npm、构建器、第三方 CDN 或新增 GitHub Actions。保留 `.nojekyll`，现有 GitHub Pages 的分支发布方式可以继续使用。
+ 
+-## 新增博客
++## 页面与内容
+ 
+-先在 `content/blogs.js` 顶部的 `BLOG_SECTIONS` 数组中维护分区，例如 `"技术"`、`"想法"`、`"书摘"`。增加一个字符串即新建分区，删除一个字符串即移除；也可在 Blogs 页面用“新建分区”临时创建自定义分区，分区会保存在当前浏览器中并可用 × 删除。
++| 路径 | 用途 |
++| --- | --- |
++| `index.html` | 个人介绍、分组兴趣、关注方向、精选实践、近期文章 |
++| `blogs.html` | 文章列表、分类与搜索 |
++| `article.html?post=<slug>` | 独立文章页、目录、章节锚点、永久链接、原始 Markdown |
++| `resources.html` | 工具列表与平台筛选 |
++| `projects.html` | 项目与经历 |
++| `content/site.js` | 个人信息、兴趣、项目与工具数据 |
++| `content/blogs.js` | 文章元数据与稳定 slug |
++| `content/blogs/*.md` | Markdown 文章正文 |
++| `assets/styles.css` | 颜色、字体、布局与响应式规则 |
++| `assets/app.js` | 页面内容、搜索、筛选与主题 |
++| `assets/article.js` | 文章加载、目录、定位、链接复制与错误处理 |
++| `assets/markdown.js` | 本地轻量 Markdown 渲染器 |
+ 
+-### 第一步：创建 Markdown 文件
++### 更新个人信息
+ 
+-在 `content/blogs/` 中创建文件，例如：
++编辑 `content/site.js`：
+ 
+-```text
+-content/blogs/my-new-post.md
+-```
++- `profile.displayName` / `romanName` / `intro`：姓名与介绍。
++- `profile.tagGroups`：研究兴趣、工具实践与生活兴趣；旧的 `tags` 字段仍兼容。
++- `about`：关注方向的标题、简述。
++- `featured`：首页精选实践，`url` 指向真实项目入口或本站经历锚点。
++- `projects`：保留项目、竞赛与荣誉；可用 `id` 建立稳定的经历锚点。
++- `resources`：工具名称、简介、平台、状态、能力标签与公开链接。
+ 
+-正文可以使用标题、段落、粗体、斜体、链接、引用、列表、行内代码和代码块。
++工具的 `url` 留空时显示普通项目介绍和 `note`，不会生成假的下载按钮。Obsidian Margin Comment 当前尚无经核验的公开发布地址；发布后填写该条目的 `url` 即可。ChatGPT 工具采用已存在的公开仓库名称 **Reading Progress**，以 `alias` 保留此前使用的 **Reading Process** 称呼。界面不声称任何工具已经通过商店审核。
+ 
+-### 第二步：登记文章
++### 新增文章
+ 
+-在 `content/blogs.js` 的数组中增加：
++1. 在 `content/blogs/` 新建 Markdown。
++2. 在 `content/blogs.js` 登记以下字段：
+ 
+ ```js
+ {
++  slug: "my-new-post",
+   title: "文章标题",
+-  date: "2026-08-05",
+-  category: "Database",
+-  tags: ["Tag A", "Tag B"],
+-  summary: "显示在首页卡片中的摘要。",
++  date: "2026-10-21",
++  category: "技术",
++  tags: ["Database", "Data Infra"],
++  summary: "一句准确的文章摘要。",
+   file: "content/blogs/my-new-post.md"
+ }
+ ```
+ 
+-页面会自动按日期倒序排列，并自动生成分类筛选按钮与搜索索引。
+-
+-## 部署到 GitHub Pages
+-
+-### 用户主页仓库
+-
+-1. 创建名为 `你的用户名.github.io` 的公开仓库。
+-2. 把本目录内的全部文件放在仓库根目录并推送到 `main` 分支。
+-3. 打开仓库 `Settings → Pages`。
+-4. 在 `Build and deployment` 中选择 `Deploy from a branch`。
+-5. Branch 选择 `main`，目录选择 `/ (root)`，然后保存。
+-
+-访问地址通常为：
++文章地址是 `article.html?post=my-new-post`。已发布的 `slug` 请保持稳定，修改标题不需要修改 slug。渲染器根据目录中登记的路径读取正文，不允许 URL 参数直接指定任意文件。
+ 
+-```text
+-https://你的用户名.github.io/
+-```
+-
+-### 普通项目仓库
+-
+-同样选择 `Deploy from a branch`。访问地址通常为：
+-
+-```text
+-https://你的用户名.github.io/仓库名/
+-```
++博客按照日期降序排列。搜索覆盖标题、摘要、分类和标签；`q` 与 `category` 保存在 URL 中，从文章返回时能恢复。分类在 `BLOG_SECTIONS` 中维护，文章中出现的其他分类也会自动加入。原来的“新建分区”只会修改访问者自己的浏览器、不会更新仓库，因此已从公开页面移除。
+ 
+-代码中全部使用相对路径，因此两种部署方式都可正常工作。
++### 文章阅读
+ 
+-## 图标与设计
++每篇文章有独立地址，可以直接访问、刷新、前进后退；文章标题只显示一次。目录为重复标题生成唯一 ID，支持中文章节链接。复制链接遇到剪贴板权限或非安全上下文限制时，会显示可手动复制的真实链接，不会假报成功。网络错误提供重试和返回入口，未知 slug 显示明确提示。
+ 
+-图标使用内嵌 SVG，采用 Fluent 2 风格的圆角、轻量线框视觉语言，不依赖外部 CDN。这样可以避免网络、版本和构建工具导致的图标加载失败。
++轻量渲染器支持标题 h1–h6、段落、强调、行内代码、围栏代码、嵌套列表、引用、链接、图片与基础表格；它是 Markdown 子集，不宣称完整 CommonMark，也不运行 Mermaid 或 LaTeX。原始 HTML 被转义，危险 URL 被拒绝。代码采用柔和底色并保留内容，不依赖在线语法高亮。
+ 
+-主题颜色集中定义在 `assets/styles.css` 顶部的 `:root` 中。修改 `--accent`、`--bg`、`--text` 等变量即可整体换色。
++## 视觉与无障碍
+ 
+-## 常见问题
++- 默认浅色；右上角按钮切换深色并记住偏好。本地存储不可用时，本次页面仍可切换。
++- 颜色集中在 `:root` 与 `:root[data-theme="dark"]`。正文、选中状态与 `mark` 分别指定前景和背景，修复旧版选中时同色的问题。
++- 常规正文 17px，文章正文 18px，项目描述 17px；日期与标签使用较小的辅助字号，正文不再使用等宽字体。
++- 最大内容宽度 1080px，文章主要阅读列约 760px。平板和手机使用单栏；手机导航直接展示四个入口，无需展开侧栏。
++- 提供跳到正文、可见键盘焦点、真实链接、筛选按钮 `aria-pressed`、结果状态、reduced-motion 和打印样式。
++- 不使用渐变文字、透明填充、强混合模式或大面积高饱和色。浏览器第三方扩展仍可能覆盖站点样式，无法保证兼容所有强制配色或高亮插件。
+ 
+-### 页面能打开，但博客点击后读取失败
++## 设计参考
+ 
+-不要使用 `file://` 直接打开；请启动本地 HTTP 服务。部署到 GitHub Pages 后不会有这个问题。
++参考以下个人主页的内容组织方法，未复制其代码或素材：
+ 
+-### 修改后 GitHub Pages 没更新
++- [Shu Ding](https://shud.in/)：简短个人叙事与少量清晰入口。
++- [Anthony Fu](https://antfu.me/)：以实际工具与创作为线索介绍自己。
++- [Andrej Karpathy](https://karpathy.ai/)：经历与项目分层组织。
+ 
+-确认 Pages 的发布分支为当前提交所在的分支，并等待 GitHub 完成静态发布。这个项目没有 workflow 文件，不需要 OAuth `workflow` scope。
++具体颜色、留白、字体和中文排版为本站设计。开发说明留在 README，公开页面展示个人内容。
+ 
+-### 想删除某个模块
++## 部署
+ 
+-可以先删除 `content/site.js` 中对应数组的全部条目。需要彻底删除模块时，再从 `index.html` 删除对应 `<section>` 和导航链接。
++保留现有 GitHub Pages 配置：`Settings → Pages → Deploy from a branch → main / (root)`。页面内资源使用相对路径，适用于用户主页或子目录部署。若复制到其他域名，请同步修改 HTML 中的 canonical、Open Graph URL 和个人信息。
+ 
+ ## License
+ 
+-你可以自由修改并作为自己的个人主页使用。示例个人信息、文章与链接请在公开部署前按实际情况检查和替换。
++沿用仓库原有 LICENSE。个人资料、项目状态和链接以本人持续维护的内容为准。
+diff --git a/article.html b/article.html
+new file mode 100644
+index 0000000000000000000000000000000000000000..763f016f2269a829cd67f4b2fa14ca7e85b43a20
+--- /dev/null
++++ b/article.html
+@@ -0,0 +1,43 @@
++<!doctype html>
++<html lang="zh-CN" data-theme="light">
++<head>
++  <meta charset="UTF-8"/>
++  <meta name="viewport" content="width=device-width, initial-scale=1"/>
++  <meta name="description" content="T_IM 的技术笔记与学习记录。"/>
++  <meta name="theme-color" content="#fafbf8"/>
++  <meta name="color-scheme" content="light dark"/>
++  <meta property="og:title" content="阅读文章 · T_IM"/>
++  <meta property="og:description" content="T_IM 的技术笔记与学习记录。"/>
++  <meta property="og:type" content="article"/>
++  <meta property="og:url" content="https://exyeus.github.io/article.html"/>
++  <meta property="og:locale" content="zh_CN"/>
++  <link rel="canonical" href="https://exyeus.github.io/article.html"/>
++  <title>阅读文章 · T_IM</title>
++  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml"/>
++  <script>try { document.documentElement.dataset.theme = localStorage.getItem('tim-homepage-theme') === 'dark' ? 'dark' : 'light'; } catch {}</script>
++  <link rel="stylesheet" href="assets/styles.css"/>
++  <script src="content/site.js" defer></script>
++  <script src="content/blogs.js" defer></script>
++  <script src="assets/app.js" defer></script>
++  <script src="assets/markdown.js" defer></script>
++  <script src="assets/article.js" defer></script>
++</head>
++<body data-page="article">
++  <a class="skip-link" href="#main">跳到正文</a>
++  <header class="site-header">
++    <div class="header-inner container">
++      <a class="brand" href="index.html" aria-label="T_IM · 返回首页"><span class="brand-word">T_IM<span class="brand-dot">.</span></span><span class="brand-caption">学习 · 思考 · 构建</span></a>
++      <nav class="primary-nav" aria-label="主导航"><a href="index.html">关于</a><a href="blogs.html" aria-current="page">文章</a><a href="resources.html">工具</a><a href="projects.html">经历</a></nav>
++      <div class="header-actions"><a class="header-github" href="https://github.com/Exyeus" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a><button class="theme-toggle" id="themeToggle" type="button" aria-label="切换为深色主题" aria-pressed="false"><svg class="theme-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 13A8.5 8.5 0 0 1 11 3.5 8.5 8.5 0 1 0 20.5 13Z"/></svg><svg class="theme-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg></button></div>
++    </div>
++  </header>
++  <main id="main" class="container main-content article-main" tabindex="-1">
++    <div class="article-navigation"><a class="text-link" id="articleBack" href="blogs.html"><span aria-hidden="true">←</span> 返回文章列表</a><span class="article-site-note">NOTES BY T_IM</span></div>
++    <div id="articleState" class="article-state" aria-live="polite">正在读取文章…</div>
++    <header id="articleHeader" class="article-header" hidden><p class="eyebrow" id="articleCategory"></p><h1 id="articleTitle"></h1><div class="article-meta"><time id="articleDate"></time><span aria-hidden="true">·</span><span id="articleReadingTime"></span></div><p class="article-summary" id="articleSummary"></p><div class="tags" id="articleTags"></div></header>
++    <div class="reading-layout"><article id="articleBody" class="prose" aria-label="文章正文"></article><aside class="toc-panel" id="tocPanel" hidden><nav aria-label="文章目录"><p class="toc-label">本文目录</p><div id="articleToc"></div></nav><div class="article-actions"><button class="text-link" id="copyArticleLink" type="button" hidden>复制文章链接 <span aria-hidden="true">↗</span></button><span id="copyStatus" role="status" aria-live="polite"></span><a class="text-link" id="articleSource" href="blogs.html" hidden>查看 Markdown 原文 ↗</a></div></aside></div>
++    <noscript><p class="noscript-note">此页的目录与工具列表需要 JavaScript。你也可以在 <a href="https://github.com/Exyeus/exyeus.github.io/tree/main/content">GitHub 阅读原始内容</a>。</p></noscript>
++  </main>
++  <footer class="site-footer container"><div><a href="index.html" class="footer-name">T_IM<span class="brand-dot">.</span></a><span>保持好奇，认真做事。</span></div><a href="#main" class="back-top">回到顶部 <span aria-hidden="true">↑</span></a></footer>
++</body>
++</html>
+diff --git a/assets/app.js b/assets/app.js
+index 39508a1634a360be88f99fa4aca72cbdd460062a..d7de8c9eba2cc7f0195026efed6d96ea50e7ea13 100644
+--- a/assets/app.js
++++ b/assets/app.js
+@@ -1,281 +1,158 @@
+ (function () {
+   "use strict";
+-
+-  const site = window.SITE_DATA;
++  const site = window.SITE_DATA || {};
+   const blogs = window.BLOG_DATA || [];
+-  if (!site) throw new Error("SITE_DATA 未加载，请检查 content/site.js。 ");
+-
+   const $ = (selector, root = document) => root.querySelector(selector);
+-  const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
+-  const icon = (name) => `<svg aria-hidden="true"><use href="#icon-${name}"></use></svg>`;
+-  const safeIcon = (name) => ["home", "award", "note", "tool", "github", "mail", "link", "arrow", "search", "external", "calendar", "tag"].includes(name) ? name : "link";
+-  const isExternal = (url) => /^https?:\/\//i.test(url);
+-
++  const esc = value => String(value ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
++  const external = url => /^https?:\/\//i.test(url);
++  const safeUrl = value => {
++    if (typeof value !== "string" || !value.trim()) return "";
++    try {
++      const url = new URL(value, location.href);
++      if (["https:", "http:", "mailto:"].includes(url.protocol)) return value;
++      // Relative links remain usable when previewing the static pages locally.
++      if (url.protocol === "file:" && !/^(?:[a-z][a-z0-9+.-]*:|\/\/)/i.test(value)) return value;
++      return "";
++    } catch { return ""; }
++  };
++  const arrow = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>';
++  const outward = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12"/></svg>';
++  const tags = items => (items || []).map(tag => '<span class="tag">' + esc(tag) + '</span>').join("");
++  const linkAttrs = url => external(url) ? ' target="_blank" rel="noopener noreferrer"' : "";
++  const sortedBlogs = () => [...blogs].sort((a, b) => b.date.localeCompare(a.date));
++  const slugOf = blog => blog.slug || blog.file.split("/").pop().replace(/\.md$/i, "");
++  const dateLabel = date => {
++    const d = new Date(date + "T00:00:00");
++    return Number.isNaN(d.getTime()) ? date : new Intl.DateTimeFormat("zh-CN", { year: "numeric", month: "long", day: "numeric" }).format(d);
++  };
++  function articleUrl(blog, filters) {
++    const params = new URLSearchParams({ post: slugOf(blog) });
++    if (filters?.category && filters.category !== "全部") params.set("category", filters.category);
++    if (filters?.q) params.set("q", filters.q);
++    return "article.html?" + params;
++  }
+   function renderProfile() {
+-    const profile = site.profile;
+-    const brandName = $("#brandName");
+-    const brandRole = $("#brandRole");
+-    if (brandName) brandName.textContent = profile.name;
+-    if (brandRole) brandRole.textContent = profile.role;
+-
+-    const heroName = $("#heroName");
+-    if (!heroName) return;
+-    document.title = `${profile.name} · Personal Homepage`;
+-    $("#heroEyebrow").textContent = profile.eyebrow;
+-    heroName.textContent = profile.name;
+-    $("#heroIntro").textContent = profile.intro;
+-    $("#statusText").textContent = profile.status;
+-
+-    $("#heroTags").innerHTML = profile.tags.map(tag => `<span class="hero-tag">${tag}</span>`).join("");
+-    $("#profileFacts").innerHTML = profile.facts.map(item => `<div><dt>${item.label}</dt><dd>${item.value}</dd></div>`).join("");
+-    $("#heroActions").innerHTML = profile.actions.map(action => {
+-      const attrs = isExternal(action.url) ? ' target="_blank" rel="noreferrer"' : "";
+-      return `<a class="action-button${action.primary ? " primary" : ""}" href="${action.url}"${attrs}>${icon(safeIcon(action.icon))}<span>${action.label}</span></a>`;
++    const p = site.profile;
++    if (!p || !$("#heroName")) return;
++    $("#heroName").textContent = p.displayName || p.name;
++    $("#heroRomanName").textContent = (p.romanName || "") + " / " + p.name;
++    $("#heroEyebrow").textContent = p.eyebrow;
++    $("#heroIntro").textContent = p.intro;
++    $("#profileFacts").innerHTML = (p.facts || []).map(x => '<div><dt>' + esc(x.label) + '</dt><dd>' + esc(x.value) + '</dd></div>').join("");
++    $("#heroActions").innerHTML = (p.actions || []).map(x => {
++      const url = safeUrl(x.url);
++      return url ? '<a class="button ' + (x.primary ? 'button-primary' : 'button-quiet') + '" href="' + esc(url) + '"' + linkAttrs(url) + '>' + esc(x.label) + (external(url) ? outward : arrow) + '</a>' : "";
+     }).join("");
++    const groups = p.tagGroups || [{ label: "兴趣", tags: p.tags || [] }];
++    $("#interestGroups").innerHTML = groups.map(x => '<div class="interest-group"><h3>' + esc(x.label) + '</h3><div class="tags">' + tags(x.tags) + '</div></div>').join("");
+   }
+-
+   function renderAbout() {
+     if (!$("#aboutGrid")) return;
+-    const items = Array.isArray(site.about) ? site.about : [];
+-    $("#aboutGrid").innerHTML = items.map((item, index) => `
+-      <article class="about-card">
+-        <div class="card-kicker"><span>${item.kicker}</span><span>0${index + 1}</span></div>
+-        <h3>${item.title}</h3>
+-        <p>${item.text}</p>
+-      </article>
+-    `).join("");
++    $("#aboutGrid").innerHTML = (site.about || []).map((x, i) => '<article class="focus-item"><div class="item-kicker"><span class="item-number">0' + (i + 1) + '</span>' + esc(x.kicker) + '</div><h3>' + esc(x.title) + '</h3><p>' + esc(x.text) + '</p></article>').join("");
++  }
++  function renderFeatured() {
++    if (!$("#featuredList")) return;
++    $("#featuredList").innerHTML = (site.featured || []).map((x, i) => {
++      const url = safeUrl(x.url);
++      return '<article class="work-item"><div class="work-index">0' + (i + 1) + '</div><div class="work-body"><p class="item-kicker">' + esc(x.kicker) + '</p><h3>' + (url ? '<a href="' + esc(url) + '"' + linkAttrs(url) + '>' + esc(x.title) + arrow + '</a>' : esc(x.title)) + '</h3><p>' + esc(x.description) + '</p></div><div class="tags work-tags">' + tags(x.tags) + '</div></article>';
++    }).join("");
+   }
+-
+   function renderProjects() {
+     if (!$("#projectsList")) return;
+-    const items = Array.isArray(site.projects) ? site.projects : (site.honors || []);
+-    $("#projectsList").innerHTML = items.map(item => `
+-      <article class="timeline-item">
+-        <div class="timeline-year">${item.year}</div>
+-        <div class="timeline-body"><h3>${item.title}</h3><p>${item.description}</p></div>
+-        <span class="timeline-badge">${item.badge}</span>
+-      </article>
+-    `).join("");
++    $("#projectsList").innerHTML = (site.projects || []).map((x, i) => '<article class="timeline-item" id="' + esc(x.id || 'experience-' + (i + 1)) + '"><div class="timeline-year">' + esc(x.year) + '</div><div class="timeline-body"><h2>' + esc(x.title) + '</h2>' + (x.description ? '<p>' + esc(x.description) + '</p>' : '') + '<span class="badge">' + esc(x.badge) + '</span></div></article>').join("");
+   }
+-
+   function renderResources() {
+-    if (!$("#resourceList")) return;
+-    const items = Array.isArray(site.resources) ? site.resources : [];
+-    $("#resourceList").innerHTML = items.map(item => {
+-      const attrs = isExternal(item.url) ? ' target="_blank" rel="noreferrer"' : "";
+-      return `<a class="resource-card" href="${item.url}"${attrs}>
+-        <span class="resource-icon">${icon(safeIcon(item.icon))}</span>
+-        <h3>${item.title}</h3>
+-        <p>${item.description}</p>
+-        <div class="resource-bottom"><span>${item.type}</span><span>Open ${icon(isExternal(item.url) ? "external" : "arrow")}</span></div>
+-      </a>`;
+-    }).join("");
+-  }
+-
+-  let currentCategory = "全部";
+-  let searchText = "";
+-  const customCategoryStorageKey = "tim-homepage-blog-custom-categories";
+-
+-  function escapeHtml(value) {
+-    return String(value).replace(/[&<>"]/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[character]);
+-  }
+-
+-  function loadCustomCategories() {
+-    try {
+-      const value = JSON.parse(window.localStorage.getItem(customCategoryStorageKey) || "[]");
+-      return Array.isArray(value) ? value.filter(item => typeof item === "string" && item.trim()) : [];
+-    } catch {
+-      return [];
+-    }
+-  }
+-
+-  let customCategories = loadCustomCategories();
+-
+-  function saveCustomCategories() {
+-    try {
+-      window.localStorage.setItem(customCategoryStorageKey, JSON.stringify(customCategories));
+-    } catch {
+-      // 本地存储不可用时，当前页面内仍可使用新建的分区。
+-    }
+-  }
+-
+-  function blogCategories() {
+-    const configured = Array.isArray(window.BLOG_SECTIONS) ? window.BLOG_SECTIONS : [];
+-    return ["全部", ...new Set([...configured, ...customCategories, ...blogs.map(blog => blog.category)].filter(Boolean))];
+-  }
+-
+-  function renderBlogFilters() {
+-    if (!$("#blogFilters")) return;
+-    $("#blogFilters").innerHTML = blogCategories().map(category => {
+-      const custom = customCategories.includes(category);
+-      return `<span class="filter-pill-group"><button class="filter-pill${category === currentCategory ? " active" : ""}" type="button" data-category="${escapeHtml(category)}">${escapeHtml(category)}</button>${custom ? `<button class="filter-delete" type="button" data-delete-category="${escapeHtml(category)}" aria-label="删除分区 ${escapeHtml(category)}">×</button>` : ""}</span>`;
+-    }).join("");
+-    $$(".filter-pill", $("#blogFilters")).forEach(button => {
+-      button.addEventListener("click", () => {
+-        currentCategory = button.dataset.category;
+-        renderBlogFilters();
+-        renderBlogs();
+-      });
+-    });
+-    $$(".filter-delete", $("#blogFilters")).forEach(button => {
+-      button.addEventListener("click", () => {
+-        const category = button.dataset.deleteCategory;
+-        customCategories = customCategories.filter(item => item !== category);
+-        saveCustomCategories();
+-        if (currentCategory === category) currentCategory = "全部";
+-        renderBlogFilters();
+-        renderBlogs();
+-      });
+-    });
+-  }
+-
+-  function setupCategoryManagement() {
+-    const createButton = $("#categoryCreate");
+-    if (!createButton) return;
+-    createButton.addEventListener("click", () => {
+-      const category = window.prompt("新分区名称（例如：技术、想法、书摘）");
+-      const name = category && category.trim();
+-      if (!name || blogCategories().includes(name)) return;
+-      customCategories = [...customCategories, name];
+-      saveCustomCategories();
+-      currentCategory = name;
+-      renderBlogFilters();
+-      renderBlogs();
++    const list = $("#resourceList");
++    if (!list) return;
++    const items = site.resources || [];
++    let category = "全部";
++    const filters = $("#resourceFilters");
++    const categories = ["全部", ...new Set(items.map(x => x.category || x.type).filter(Boolean))];
++    filters.innerHTML = categories.map(name => '<button type="button" class="filter-pill" data-category="' + esc(name) + '" aria-pressed="' + (name === category) + '">' + esc(name) + '</button>').join("");
++    const render = () => {
++      list.innerHTML = items.filter(x => category === "全部" || (x.category || x.type) === category).map((x, i) => {
++        const url = safeUrl(x.url);
++        return '<article class="resource-card" id="' + esc(x.id || 'tool-' + (i + 1)) + '"><div class="resource-top"><span class="resource-monogram" aria-hidden="true">' + (x.category === "Obsidian" ? "O" : x.id === "chatgpt-reading-progress" ? "C" : "W") + '<span>·</span></span><span class="resource-type">' + esc(x.category || x.type) + '</span>' + (x.status ? '<span class="resource-status"><i aria-hidden="true"></i>' + esc(x.status) + '</span>' : '') + '</div><h2>' + esc(x.title) + '</h2><p class="resource-description">' + esc(x.description) + '</p><div class="tags">' + tags(x.tags) + '</div><div class="resource-bottom">' + (url ? '<a class="text-link" href="' + esc(url) + '"' + linkAttrs(url) + '>查看项目' + outward + '</a>' : '<span class="release-note">' + esc(x.note || "发布入口待补充") + '</span>') + '<span class="resource-platform">' + esc(x.type) + '</span></div></article>';
++      }).join("");
++      filters.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.category === category)));
++      $("#resourceCount").textContent = list.children.length + " 个工具";
++    };
++    filters.addEventListener("click", e => {
++      const b = e.target.closest("button[data-category]");
++      if (b) { category = b.dataset.category; render(); }
+     });
++    render();
+   }
+-
+-  function formatDate(date) {
+-    const value = new Date(`${date}T00:00:00`);
+-    if (Number.isNaN(value.getTime())) return date;
+-    return new Intl.DateTimeFormat("zh-CN", { year: "numeric", month: "short", day: "numeric" }).format(value);
++  function blogRow(blog, compact = false, filters) {
++    const h = compact ? "3" : "2";
++    return '<article class="blog-row' + (compact ? ' compact' : '') + '"><div class="blog-date"><time datetime="' + esc(blog.date) + '">' + esc(dateLabel(blog.date)) + '</time><span>' + esc(blog.category) + '</span></div><div class="blog-body"><h' + h + '><a href="' + esc(articleUrl(blog, filters)) + '">' + esc(blog.title) + arrow + '</a></h' + h + '>' + (!compact ? '<p>' + esc(blog.summary) + '</p><div class="tags">' + tags(blog.tags) + '</div>' : '') + '</div></article>';
+   }
+-
+-  function filteredBlogs() {
+-    const query = searchText.trim().toLowerCase();
+-    return blogs.filter(blog => {
+-      const matchesCategory = currentCategory === "全部" || blog.category === currentCategory;
+-      const haystack = [blog.title, blog.summary, blog.category, ...(blog.tags || [])].join(" ").toLowerCase();
+-      return matchesCategory && (!query || haystack.includes(query));
+-    }).sort((a, b) => b.date.localeCompare(a.date));
++  function renderLatest() {
++    if ($("#latestPosts")) $("#latestPosts").innerHTML = sortedBlogs().slice(0, 3).map(x => blogRow(x, true)).join("");
+   }
+-
+-  function renderBlogs() {
++  function setupBlogIndex() {
+     if (!$("#blogList")) return;
+-    const items = filteredBlogs();
+-    $("#blogList").innerHTML = items.map(blog => `
+-      <article class="blog-card" tabindex="0" role="button" data-file="${blog.file}" data-title="${blog.title}" data-date="${blog.date}" aria-label="阅读文章：${blog.title}">
+-        <div class="blog-meta"><span>${icon("calendar")}${formatDate(blog.date)}</span><span>${blog.category}</span></div>
+-        <h3>${blog.title}</h3>
+-        <p>${blog.summary}</p>
+-        <div class="blog-footer"><div class="blog-tags">${(blog.tags || []).map(tag => `<span>#${tag}</span>`).join("")}</div><span class="blog-open">${icon("arrow")}</span></div>
+-      </article>
+-    `).join("");
+-    $("#blogEmpty").hidden = items.length !== 0;
+-
+-    $$(".blog-card", $("#blogList")).forEach(card => {
+-      const open = () => openArticle(card.dataset.file, card.dataset.title, card.dataset.date);
+-      card.addEventListener("click", open);
+-      card.addEventListener("keydown", event => {
+-        if (event.key === "Enter" || event.key === " ") {
+-          event.preventDefault();
+-          open();
+-        }
+-      });
+-    });
+-  }
+-
+-  async function openArticle(file, title, date) {
+-    const dialog = $("#articleDialog");
+-    const content = $("#articleContent");
+-    content.innerHTML = `<h1>${title}</h1><p class="markdown-byline">${formatDate(date)}</p><p>正在读取文章…</p>`;
+-    dialog.showModal();
+-    document.body.style.overflow = "hidden";
+-
+-    try {
+-      const response = await fetch(file, { cache: "no-cache" });
+-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+-      const markdown = await response.text();
+-      content.innerHTML = window.renderMarkdown(markdown);
+-      const firstHeading = $("h1", content);
+-      if (firstHeading) {
+-        firstHeading.insertAdjacentHTML("afterend", `<p class="markdown-byline">${formatDate(date)}</p>`);
+-      } else {
+-        content.insertAdjacentHTML("afterbegin", `<h1>${title}</h1><p class="markdown-byline">${formatDate(date)}</p>`);
++    const params = new URLSearchParams(location.search);
++    const categories = ["全部", ...new Set([...(window.BLOG_SECTIONS || []), ...blogs.map(x => x.category)].filter(Boolean))];
++    let category = params.get("category") || "全部";
++    if (!categories.includes(category)) category = "全部";
++    let q = params.get("q") || "";
++    $("#blogSearch").value = q;
++    $("#blogFilters").innerHTML = categories.map(name => '<button type="button" class="filter-pill" data-category="' + esc(name) + '" aria-pressed="' + (name === category) + '">' + esc(name) + '</button>').join("");
++    const render = (updateUrl = true) => {
++      const term = q.trim().toLocaleLowerCase();
++      const items = sortedBlogs().filter(x => (category === "全部" || x.category === category) && [x.title, x.summary, x.category, ...(x.tags || [])].join(" ").toLocaleLowerCase().includes(term));
++      $("#blogList").innerHTML = items.map(x => blogRow(x, false, { category, q })).join("");
++      $("#blogEmpty").hidden = items.length > 0;
++      $("#blogCount").textContent = items.length + " 篇文章";
++      $("#blogFilters").querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.category === category)));
++      if (updateUrl) {
++        const url = new URL(location.href);
++        if (category !== "全部") url.searchParams.set("category", category); else url.searchParams.delete("category");
++        if (q) url.searchParams.set("q", q); else url.searchParams.delete("q");
++        history.replaceState(null, "", url);
+       }
+-      content.scrollTop = 0;
+-    } catch (error) {
+-      const localHint = location.protocol === "file:"
+-        ? "你正在直接双击 index.html。浏览器会阻止读取 Markdown 文件，请在目录中运行 python -m http.server 8000，再访问 http://localhost:8000。"
+-        : "请检查文章文件路径以及文件是否已经提交到仓库。";
+-      content.innerHTML = `<h1>${title}</h1><p class="markdown-byline">${formatDate(date)}</p><p>文章读取失败。</p><blockquote><p>${localHint}</p></blockquote><p><code>${String(error.message)}</code></p>`;
+-    }
+-  }
+-
+-  function closeArticle() {
+-    const dialog = $("#articleDialog");
+-    if (dialog.open) dialog.close();
+-    document.body.style.overflow = "";
+-  }
+-
+-  function setupDialog() {
+-    if (!$("#dialogClose")) return;
+-    $("#dialogClose").addEventListener("click", closeArticle);
+-    $("#articleDialog").addEventListener("click", event => {
+-      if (event.target === $("#articleDialog")) closeArticle();
++    };
++    $("#blogSearch").addEventListener("input", e => { q = e.target.value; render(); });
++    $("#blogFilters").addEventListener("click", e => {
++      const b = e.target.closest("button[data-category]");
++      if (b) { category = b.dataset.category; render(); }
+     });
+-    $("#articleDialog").addEventListener("close", () => { document.body.style.overflow = ""; });
+-  }
+-
+-  function setupSearch() {
+-    if (!$("#blogSearch")) return;
+-    $("#blogSearch").addEventListener("input", event => {
+-      searchText = event.target.value;
+-      renderBlogs();
++    $("#clearBlogFilters").addEventListener("click", () => { q = ""; category = "全部"; $("#blogSearch").value = ""; render(); $("#blogSearch").focus(); });
++    window.addEventListener("pageshow", () => {
++      const p = new URLSearchParams(location.search);
++      q = p.get("q") || "";
++      category = categories.includes(p.get("category")) ? p.get("category") : "全部";
++      $("#blogSearch").value = q;
++      render(false);
+     });
+-  }
+-
+-  function setupNavigation() {
+-    const sidebar = $("#sidebar");
+-    const backdrop = $("#sidebarBackdrop");
+-    const menuButton = $("#mobileMenuButton");
+-
+-    const setMenu = (open) => {
+-      sidebar.classList.toggle("open", open);
+-      backdrop.classList.toggle("show", open);
+-      menuButton.setAttribute("aria-expanded", String(open));
+-      menuButton.innerHTML = icon(open ? "close" : "menu");
++    render(false);
++  }
++  function setupTheme() {
++    const button = $("#themeToggle");
++    if (!button) return;
++    const update = () => {
++      const dark = document.documentElement.dataset.theme === "dark";
++      button.setAttribute("aria-pressed", String(dark));
++      button.setAttribute("aria-label", dark ? "切换为浅色主题" : "切换为深色主题");
++      button.title = dark ? "切换为浅色主题" : "切换为深色主题";
++      const meta = $('meta[name="theme-color"]');
++      if (meta) meta.content = dark ? "#19211e" : "#fafbf8";
+     };
+-
+-    menuButton.addEventListener("click", () => setMenu(!sidebar.classList.contains("open")));
+-    backdrop.addEventListener("click", () => setMenu(false));
+-    $$(".nav-link").forEach(link => link.addEventListener("click", () => setMenu(false)));
+-
+-  }
+-
+-  function init() {
+-    renderProfile();
+-    const page = document.body.dataset.page
+-      || ($("#aboutGrid") ? "home" : "")
+-      || ($("#projectsList") ? "projects" : "")
+-      || ($("#resourceList") ? "resources" : "")
+-      || ($("#blogList") ? "blogs" : "");
+-    if (page === "home") {
+-      renderAbout();
+-    } else if (page === "projects") {
+-      renderProjects();
+-    } else if (page === "resources") {
+-      renderResources();
+-    } else if (page === "blogs") {
+-      renderBlogFilters();
+-      renderBlogs();
+-      setupCategoryManagement();
+-      setupSearch();
+-      setupDialog();
+-    }
+-    setupNavigation();
+-    const footerText = $("#footerText");
+-    if (footerText && site.footer) footerText.textContent = site.footer;
+-  }
+-
+-  init();
++    button.addEventListener("click", () => {
++      const theme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
++      document.documentElement.dataset.theme = theme;
++      try { localStorage.setItem("tim-homepage-theme", theme); } catch { /* Works without storage. */ }
++      update();
++    });
++    update();
++  }
++  renderProfile();
++  renderAbout();
++  renderFeatured();
++  renderProjects();
++  renderResources();
++  renderLatest();
++  setupBlogIndex();
++  setupTheme();
+ })();
+diff --git a/assets/article.js b/assets/article.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..acb0a8c5e69481ea8e7c2f9c354adbe288b72ef7
+--- /dev/null
++++ b/assets/article.js
+@@ -0,0 +1,230 @@
++/* A real, refreshable article URL; no dialog and no arbitrary file fetches. */
++(function () {
++  "use strict";
++  if (document.body.dataset.page !== "article") return;
++
++  const $ = selector => document.querySelector(selector);
++  const params = new URLSearchParams(location.search);
++  const catalogue = Array.isArray(window.BLOG_DATA) ? window.BLOG_DATA : [];
++  const slugFor = post => post.slug || post.file.split("/").pop().replace(/\.md$/i, "");
++  const selected = params.get("post") || "";
++  const post = catalogue.find(item => slugFor(item) === selected);
++  const state = $("#articleState");
++  const body = $("#articleBody");
++  const copyButton = $("#copyArticleLink");
++  const sourceLink = $("#articleSource");
++  let canonicalUrl = "";
++  let tocObserver;
++
++  const backUrl = new URL("blogs.html", location.href);
++  for (const key of ["category", "q"]) {
++    if (params.has(key)) backUrl.searchParams.set(key, params.get(key));
++  }
++  $("#articleBack").href = backUrl.pathname + backUrl.search;
++
++  function setMeta(key, value, property = false) {
++    const attribute = property ? "property" : "name";
++    let element = document.head.querySelector(`meta[${attribute}="${key}"]`);
++    if (!element) {
++      element = document.createElement("meta");
++      element.setAttribute(attribute, key);
++      document.head.append(element);
++    }
++    element.content = value;
++  }
++
++  function setStatus(text, kind) {
++    state.hidden = false;
++    state.dataset.state = kind;
++    state.textContent = text;
++  }
++
++  function dateLabel(date) {
++    const parsed = new Date(`${date}T00:00:00`);
++    return Number.isNaN(parsed.getTime()) ? date
++      : new Intl.DateTimeFormat("zh-CN", { year: "numeric", month: "long", day: "numeric" }).format(parsed);
++  }
++
++  function readingMinutes(text) {
++    const chinese = (text.match(/[\u3400-\u9fff]/g) || []).length;
++    const words = text.replace(/[\u3400-\u9fff]/g, " ").trim().split(/\s+/).filter(Boolean).length;
++    return Math.max(1, Math.ceil(chinese / 450 + words / 220));
++  }
++
++  function updateMetadata() {
++    const name = window.SITE_DATA?.profile?.name || "T_IM";
++    document.title = `${post.title} · ${name}`;
++    setMeta("description", post.summary || post.title);
++    setMeta("og:title", document.title, true);
++    setMeta("og:description", post.summary || post.title, true);
++    setMeta("og:type", "article", true);
++    setMeta("article:published_time", post.date, true);
++    const url = new URL("article.html", location.href);
++    url.searchParams.set("post", slugFor(post));
++    canonicalUrl = url.href;
++    let canonical = document.head.querySelector('link[rel="canonical"]');
++    if (!canonical) {
++      canonical = document.createElement("link");
++      canonical.rel = "canonical";
++      document.head.append(canonical);
++    }
++    canonical.href = canonicalUrl;
++    setMeta("og:url", canonicalUrl, true);
++  }
++
++  function jumpToHash() {
++    if (!location.hash) return;
++    let id;
++    try { id = decodeURIComponent(location.hash.slice(1)); } catch { return; }
++    const target = document.getElementById(id);
++    if (!target || !body.contains(target)) return;
++    // Fetch and rendering are async; wait for layout before locating the section.
++    requestAnimationFrame(() => target.scrollIntoView({ block: "start", behavior: "instant" }));
++  }
++
++  function createToc() {
++    const headings = [...body.querySelectorAll("h1,h2,h3,h4,h5,h6")];
++    const used = new Set();
++    const toc = $("#articleToc");
++    toc.replaceChildren();
++    tocObserver?.disconnect();
++    // The catalogue title is the page's single h1. Body h1s become sections.
++    for (let i = 0; i < headings.length; i++) {
++      if (headings[i].tagName === "H1") {
++        const section = document.createElement("h2");
++        section.replaceChildren(...headings[i].childNodes);
++        headings[i].replaceWith(section);
++        headings[i] = section;
++      }
++    }
++    const minimumLevel = Math.min(...headings.map(heading => Number(heading.tagName.slice(1))), 6);
++    const links = [];
++    for (const heading of headings) {
++      const text = heading.textContent.trim();
++      const base = "section-" + (text.normalize("NFKC").toLowerCase()
++        .replace(/[^\p{L}\p{N}\s-]/gu, "").replace(/\s+/g, "-").slice(0, 80) || "heading");
++      let id = base;
++      let suffix = 2;
++      while (used.has(id) || document.getElementById(id)) id = `${base}-${suffix++}`;
++      used.add(id);
++      heading.id = id;
++      const link = document.createElement("a");
++      link.href = `#${encodeURIComponent(id)}`;
++      link.textContent = text;
++      link.dataset.level = String(Number(heading.tagName.slice(1)) - minimumLevel);
++      toc.append(link);
++      links.push(link);
++      const anchor = document.createElement("a");
++      anchor.className = "heading-anchor";
++      anchor.href = link.href;
++      anchor.setAttribute("aria-label", `链接到：${text}`);
++      anchor.textContent = "#";
++      heading.append(anchor);
++    }
++    // The side panel also holds article actions, so an empty TOC must not
++    // hide the permanent-link and source controls.
++    $("#tocPanel").hidden = false;
++    toc.closest("nav").hidden = headings.length === 0;
++    if (headings.length && "IntersectionObserver" in window) {
++      const positions = new Map();
++      tocObserver = new IntersectionObserver(entries => {
++        for (const entry of entries) positions.set(entry.target, entry.isIntersecting);
++        const active = headings.find(heading => positions.get(heading));
++        if (!active) return;
++        for (let i = 0; i < links.length; i++) {
++          const current = headings[i] === active;
++          links[i].classList.toggle("active", current);
++          if (current) links[i].setAttribute("aria-current", "location");
++          else links[i].removeAttribute("aria-current");
++        }
++      }, { rootMargin: "-90px 0px -60% 0px" });
++      headings.forEach(heading => tocObserver.observe(heading));
++    }
++  }
++
++  async function loadArticle() {
++    setStatus("正在读取文章…", "loading");
++    $("#articleHeader").hidden = true;
++    $("#tocPanel").hidden = true;
++    sourceLink.hidden = true;
++    copyButton.hidden = true;
++    copyButton.disabled = true;
++    body.replaceChildren();
++    try {
++      // Only a path already present in BLOG_DATA is eligible for a request.
++      const response = await fetch(post.file);
++      if (!response.ok) throw new Error("article-unavailable");
++      const markdown = await response.text();
++      if (typeof window.renderMarkdown !== "function") throw new Error("renderer-unavailable");
++      body.innerHTML = window.renderMarkdown(markdown);
++      const first = body.firstElementChild;
++      if (first?.tagName === "H1" && first.textContent.trim() === post.title.trim()) first.remove();
++      $("#articleTitle").textContent = post.title;
++      $("#articleCategory").textContent = post.category || "文章";
++      $("#articleDate").textContent = dateLabel(post.date);
++      $("#articleDate").setAttribute("datetime", post.date);
++      $("#articleReadingTime").textContent = `约 ${readingMinutes(markdown)} 分钟`;
++      $("#articleSummary").textContent = post.summary || "";
++      $("#articleSummary").hidden = !post.summary;
++      $("#articleTags").replaceChildren(...(post.tags || []).map(tag => {
++        const element = document.createElement("span");
++        element.className = "tag";
++        element.textContent = tag;
++        return element;
++      }));
++      sourceLink.href = post.file;
++      sourceLink.hidden = false;
++      copyButton.hidden = false;
++      copyButton.disabled = false;
++      $("#articleHeader").hidden = false;
++      state.hidden = true;
++      updateMetadata();
++      createToc();
++      jumpToHash();
++    } catch {
++      setStatus("文章暂时无法读取，请稍后重试，或返回文章列表。", "error");
++      const retry = document.createElement("button");
++      retry.type = "button";
++      retry.className = "text-link retry-button";
++      retry.textContent = "重新加载";
++      retry.addEventListener("click", loadArticle);
++      state.append(document.createTextNode(" "), retry);
++    }
++  }
++
++  copyButton.addEventListener("click", async () => {
++    if (!canonicalUrl) return;
++    const text = canonicalUrl + location.hash;
++    const status = $("#copyStatus");
++    $("#copyLinkFallback")?.remove();
++    try {
++      if (!navigator.clipboard?.writeText) throw new Error("clipboard-unavailable");
++      await navigator.clipboard.writeText(text);
++      status.textContent = "文章链接已复制";
++    } catch {
++      status.textContent = "无法自动复制，请复制下方链接：";
++      const input = document.createElement("input");
++      input.id = "copyLinkFallback";
++      input.className = "copy-link-fallback";
++      input.type = "url";
++      input.readOnly = true;
++      input.value = text;
++      input.setAttribute("aria-label", "文章永久链接");
++      status.insertAdjacentElement("afterend", input);
++      input.focus();
++      input.select();
++    }
++  });
++
++  window.addEventListener("hashchange", jumpToHash);
++  window.addEventListener("pagehide", () => tocObserver?.disconnect());
++  if (post) loadArticle();
++  else {
++    document.title = "未找到文章 · T_IM";
++    setStatus(selected ? "没有找到这篇文章，请返回文章列表选择。" : "请选择一篇文章，或返回文章列表继续浏览。", "not-found");
++    $("#articleHeader").hidden = true;
++    $("#tocPanel").hidden = true;
++    sourceLink.hidden = true;
++    copyButton.disabled = true;
++  }
++})();
+diff --git a/assets/favicon.svg b/assets/favicon.svg
+index 05151675e040470bcec1f795cd192c8fc7fbc47a..8e905fadfc3ae58e89a8fc1d7c1dd894057fead5 100644
+--- a/assets/favicon.svg
++++ b/assets/favicon.svg
+@@ -1,4 +1,5 @@
+ <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+-  <rect width="64" height="64" rx="18" fill="#24271E"/>
+-  <path d="M17 17h30v8H36v24h-8V25H17z" fill="#2E59A7"/>
++  <rect width="64" height="64" rx="14" fill="#315f47"/>
++  <path d="M16 18h29v7H34v24h-7V25H16z" fill="#fafbf8"/>
++  <circle cx="47" cy="46" r="3" fill="#bed4ba"/>
+ </svg>
+diff --git a/assets/markdown.js b/assets/markdown.js
+index 0174abc8c351db9b8b5625a868877bc77ecfb887..42a76bfd7e0d3b88bf66a7ccf0190c89944cd75f 100644
+--- a/assets/markdown.js
++++ b/assets/markdown.js
+@@ -1,121 +1,167 @@
+-/* A deliberately small Markdown renderer for local, trusted article files. */
++/* Small, dependency-free Markdown for the site's own articles.
++ * Supported: headings, paragraphs, fences, lists (including nested lists),
++ * blockquotes, tables, links, images, emphasis and inline code.
++ * Raw HTML is always escaped. This is not a full CommonMark implementation.
++ */
+ (function () {
+   "use strict";
+ 
+-  const escapeHtml = (value) => String(value)
+-    .replaceAll("&", "&amp;")
+-    .replaceAll("<", "&lt;")
+-    .replaceAll(">", "&gt;")
+-    .replaceAll('"', "&quot;")
+-    .replaceAll("'", "&#039;");
+-
+-  function inline(text) {
+-    let value = escapeHtml(text);
+-    value = value.replace(/`([^`]+)`/g, "<code>$1</code>");
+-    value = value.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+-    value = value.replace(/\*([^*]+)\*/g, "<em>$1</em>");
+-    value = value.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noreferrer">$1</a>');
+-    return value;
++  const escapeHtml = value => String(value).replace(/[&<>"']/g, character => ({
++    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
++  })[character]);
++
++  function safeUrl(value, image = false) {
++    const url = value.trim();
++    if (!url || /[\u0000-\u0020\u007f\\]/.test(url) || url.startsWith("//")) return null;
++    try {
++      const parsed = new URL(url, "https://markdown.invalid/");
++      if (!["https:", "http:", ...(image ? [] : ["mailto:"])].includes(parsed.protocol)) return null;
++      return url;
++    } catch { return null; }
+   }
+ 
+-  function renderMarkdown(source) {
+-    const codeBlocks = [];
+-    let markdown = String(source).replace(/```([^\n]*)\n([\s\S]*?)```/g, (_, lang, code) => {
+-      const index = codeBlocks.length;
+-      codeBlocks.push(`<pre><code data-language="${escapeHtml(lang.trim())}">${escapeHtml(code.replace(/\n$/, ""))}</code></pre>`);
+-      return `\n@@CODEBLOCK_${index}@@\n`;
+-    });
+-
+-    const lines = markdown.replace(/\r\n?/g, "\n").split("\n");
+-    const output = [];
+-    let paragraph = [];
+-    let listType = null;
+-    let listItems = [];
+-    let quoteLines = [];
+-
+-    const flushParagraph = () => {
+-      if (!paragraph.length) return;
+-      output.push(`<p>${inline(paragraph.join(" "))}</p>`);
+-      paragraph = [];
+-    };
+-
+-    const flushList = () => {
+-      if (!listType) return;
+-      output.push(`<${listType}>${listItems.map(item => `<li>${inline(item)}</li>`).join("")}</${listType}>`);
+-      listType = null;
+-      listItems = [];
+-    };
+-
+-    const flushQuote = () => {
+-      if (!quoteLines.length) return;
+-      output.push(`<blockquote><p>${inline(quoteLines.join(" "))}</p></blockquote>`);
+-      quoteLines = [];
+-    };
+-
+-    const flushAll = () => {
+-      flushParagraph();
+-      flushList();
+-      flushQuote();
+-    };
+-
+-    for (const rawLine of lines) {
+-      const line = rawLine.trimEnd();
+-      const trimmed = line.trim();
++  // Find a balanced closing delimiter, respecting escaped characters.
++  function closing(text, start, open, close) {
++    let depth = 1;
++    for (let i = start + 1; i < text.length; i++) {
++      if (text[i] === "\\") { i++; continue; }
++      if (text[i] === open) depth++;
++      if (text[i] === close && --depth === 0) return i;
++    }
++    return -1;
++  }
+ 
+-      if (/^@@CODEBLOCK_\d+@@$/.test(trimmed)) {
+-        flushAll();
+-        const index = Number(trimmed.match(/\d+/)[0]);
+-        output.push(codeBlocks[index]);
+-        continue;
++  function inline(text, depth = 0) {
++    if (depth > 12) return escapeHtml(text);
++    let result = "";
++    for (let i = 0; i < text.length;) {
++      const rest = text.slice(i);
++      if (text[i] === "\\" && /[\\`*{}\[\]()#+.!_>~|]/.test(text[i + 1] || "")) {
++        result += escapeHtml(text[i + 1]); i += 2; continue;
++      }
++      if (text[i] === "`") {
++        const marker = rest.match(/^`+/)[0];
++        const end = text.indexOf(marker, i + marker.length);
++        if (end !== -1) {
++          let code = text.slice(i + marker.length, end).replace(/\n/g, " ");
++          if (code.startsWith(" ") && code.endsWith(" ") && code.trim()) code = code.slice(1, -1);
++          result += `<code>${escapeHtml(code)}</code>`;
++          i = end + marker.length; continue;
++        }
+       }
++      const isImage = rest.startsWith("![");
++      if (text[i] === "[" || isImage) {
++        const start = i + (isImage ? 1 : 0);
++        const labelEnd = closing(text, start, "[", "]");
++        const destinationEnd = labelEnd >= 0 && text[labelEnd + 1] === "("
++          ? closing(text, labelEnd + 1, "(", ")") : -1;
++        if (destinationEnd !== -1) {
++          const label = text.slice(start + 1, labelEnd);
++          const raw = text.slice(labelEnd + 2, destinationEnd).trim();
++          const href = safeUrl(raw.replace(/^<(.+)>$/, "$1"), isImage);
++          if (href) {
++            if (isImage) result += `<img src="${escapeHtml(href)}" alt="${escapeHtml(label)}" loading="lazy" decoding="async">`;
++            else result += `<a href="${escapeHtml(href)}"${/^https?:\/\//i.test(href) ? ' target="_blank" rel="noopener noreferrer"' : ""}>${inline(label, depth + 1)}</a>`;
++          } else result += escapeHtml(label);
++          i = destinationEnd + 1; continue;
++        }
++      }
++      let matched = false;
++      for (const [marker, tag] of [["**", "strong"], ["__", "strong"], ["~~", "del"], ["*", "em"], ["_", "em"]]) {
++        if (!rest.startsWith(marker)) continue;
++        // Underscores inside identifiers should remain literal.
++        if (marker.includes("_") && /[\p{L}\p{N}]/u.test(text[i - 1] || "")) continue;
++        const end = text.indexOf(marker, i + marker.length);
++        const inner = end >= 0 ? text.slice(i + marker.length, end) : "";
++        if (!inner || /^\s|\s$/.test(inner)) continue;
++        result += `<${tag}>${inline(inner, depth + 1)}</${tag}>`;
++        i = end + marker.length; matched = true; break;
++      }
++      if (matched) continue;
++      result += escapeHtml(text[i]); i++;
++    }
++    return result;
++  }
++
++  const listMatch = line => line.match(/^( *)([-+*]|\d+[.)])\s+(.*)$/);
++  const isRule = line => /^ {0,3}(?:(?:\*\s*){3,}|(?:-\s*){3,}|(?:_\s*){3,})$/.test(line);
++  const isTableDivider = line => /^\s*\|?\s*:?-{3,}:?\s*(?:\|\s*:?-{3,}:?\s*)+\|?\s*$/.test(line);
++  const cells = line => line.trim().replace(/^\|/, "").replace(/\|$/, "").split(/(?<!\\)\|/).map(cell => cell.trim());
+ 
+-      if (!trimmed) {
+-        flushAll();
++  function blocks(lines, depth = 0) {
++    if (depth > 24) return `<p>${escapeHtml(lines.join("\n"))}</p>`;
++    const output = [];
++    const startsBlock = line => /^ {0,3}(?:#{1,6}(?:\s|$)|`{3,}|~{3,}|>)/.test(line) || !!listMatch(line) || isRule(line);
++    for (let i = 0; i < lines.length;) {
++      const line = lines[i];
++      if (!line.trim()) { i++; continue; }
++      const fence = line.match(/^ {0,3}(`{3,}|~{3,})\s*([^\s]*)[^\n]*$/);
++      if (fence) {
++        const code = [];
++        const close = new RegExp(`^ {0,3}${fence[1][0]}{${fence[1].length},}\\s*$`);
++        for (i++; i < lines.length && !close.test(lines[i]); i++) code.push(lines[i]);
++        if (i < lines.length) i++;
++        output.push(`<pre><code${fence[2] ? ` data-language="${escapeHtml(fence[2])}"` : ""}>${escapeHtml(code.join("\n"))}</code></pre>`);
+         continue;
+       }
+-
+-      const heading = trimmed.match(/^(#{1,4})\s+(.+)$/);
++      const heading = line.match(/^ {0,3}(#{1,6})(?:\s+(.*?)\s*|\s*)$/);
+       if (heading) {
+-        flushAll();
+         const level = heading[1].length;
+-        output.push(`<h${level}>${inline(heading[2])}</h${level}>`);
+-        continue;
++        output.push(`<h${level}>${inline((heading[2] || "").replace(/\s+#+\s*$/, ""))}</h${level}>`); i++; continue;
+       }
+-
+-      if (/^(-{3,}|\*{3,}|_{3,})$/.test(trimmed)) {
+-        flushAll();
+-        output.push("<hr>");
+-        continue;
++      if (isRule(line)) { output.push("<hr>"); i++; continue; }
++      if (/^ {0,3}>/.test(line)) {
++        const quote = [];
++        while (i < lines.length && /^ {0,3}>/.test(lines[i])) quote.push(lines[i++].replace(/^ {0,3}> ?/, ""));
++        output.push(`<blockquote>${blocks(quote, depth + 1)}</blockquote>`); continue;
+       }
+-
+-      const unordered = trimmed.match(/^[-*+]\s+(.+)$/);
+-      const ordered = trimmed.match(/^\d+[.)]\s+(.+)$/);
+-      if (unordered || ordered) {
+-        flushParagraph();
+-        flushQuote();
+-        const nextType = unordered ? "ul" : "ol";
+-        if (listType && listType !== nextType) flushList();
+-        listType = nextType;
+-        listItems.push((unordered || ordered)[1]);
+-        continue;
++      const first = listMatch(line);
++      if (first) {
++        const indent = first[1].length;
++        const ordered = /^\d/.test(first[2]);
++        const type = ordered ? "ol" : "ul";
++        const start = ordered ? parseInt(first[2], 10) : 1;
++        const items = [];
++        while (i < lines.length) {
++          const current = listMatch(lines[i]);
++          if (!current || current[1].length !== indent || /^\d/.test(current[2]) !== ordered) break;
++          const contentIndent = lines[i].indexOf(current[3], indent + current[2].length);
++          const item = [current[3]]; i++;
++          while (i < lines.length) {
++            const next = listMatch(lines[i]);
++            if (next && next[1].length <= indent) break;
++            if (!lines[i].trim()) {
++              const following = lines[i + 1];
++              if (following && following.match(/^ */)[0].length > indent) { item.push(""); i++; continue; }
++              break;
++            }
++            const spaces = lines[i].match(/^ */)[0].length;
++            if (spaces <= indent) break;
++            item.push(lines[i].slice(Math.min(contentIndent, spaces))); i++;
++          }
++          items.push(`<li>${blocks(item, depth + 1)}</li>`);
++          while (i < lines.length && !lines[i].trim() && listMatch(lines[i + 1] || "")?.[1].length === indent) i++;
++        }
++        output.push(`<${type}${ordered && start !== 1 ? ` start="${start}"` : ""}>${items.join("")}</${type}>`); continue;
+       }
+-
+-      const quote = trimmed.match(/^>\s?(.*)$/);
+-      if (quote) {
+-        flushParagraph();
+-        flushList();
+-        quoteLines.push(quote[1]);
+-        continue;
++      if (i + 1 < lines.length && line.includes("|") && isTableDivider(lines[i + 1])) {
++        const headings = cells(line);
++        const divider = cells(lines[i + 1]);
++        const align = divider.map(cell => cell.startsWith(":") ? (cell.endsWith(":") ? "center" : "left") : (cell.endsWith(":") ? "right" : "left"));
++        i += 2;
++        const rows = [];
++        while (i < lines.length && lines[i].trim() && lines[i].includes("|")) rows.push(cells(lines[i++]));
++        output.push(`<div class="table-scroll" tabindex="0" role="region" aria-label="表格"><table><thead><tr>${headings.map((cell, col) => `<th scope="col" style="text-align:${align[col] || "left"}">${inline(cell)}</th>`).join("")}</tr></thead><tbody>${rows.map(row => `<tr>${headings.map((_, col) => `<td style="text-align:${align[col] || "left"}">${inline(row[col] || "")}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`); continue;
+       }
+-
+-      if (listType) flushList();
+-      if (quoteLines.length) flushQuote();
+-      paragraph.push(trimmed);
++      const paragraph = [line.trimStart()]; i++;
++      while (i < lines.length && lines[i].trim() && !startsBlock(lines[i])) {
++        if (i + 1 < lines.length && lines[i].includes("|") && isTableDivider(lines[i + 1])) break;
++        paragraph.push(lines[i++].trimStart());
++      }
++      output.push(`<p>${paragraph.map((part, index) => inline(part.trimEnd()) + (index < paragraph.length - 1 ? (/ {2,}$/.test(part) ? "<br>\n" : " ") : "")).join("")}</p>`);
+     }
+-
+-    flushAll();
+     return output.join("\n");
+   }
+ 
+-  window.renderMarkdown = renderMarkdown;
++  window.renderMarkdown = source => blocks(String(source).replace(/\r\n?/g, "\n").replace(/\t/g, "    ").split("\n"));
+ })();
+diff --git a/assets/styles.css b/assets/styles.css
+index e7a9fe25e2099b57b0bb56fc40a01c42659c53f8..063bbc3b56ec1443fe039a58521c71e52e16ecbf 100644
+--- a/assets/styles.css
++++ b/assets/styles.css
+@@ -1,366 +1,383 @@
++/* A quiet, content-first theme. No font, icon, or stylesheet CDN is required. */
+ :root {
++  color-scheme: light;
++  --bg: #fafbf8;
++  --surface: #ffffff;
++  --soft: #f0f4ed;
++  --text: #26372d;
++  --secondary: #536359;
++  --muted: #627065;
++  --line: #dde5da;
++  --line-strong: #b9c8b9;
++  --accent: #315f47;
++  --accent-hover: #234a36;
++  --accent-soft: #e4eee3;
++  --on-accent: #ffffff;
++  --selection-bg: #cce4cf;
++  --selection-text: #183622;
++  --mark-bg: #e9efc6;
++  --mark-text: #28361b;
++  --code-bg: #eef2eb;
++  --content-width: 1080px;
++  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans CJK SC", "PingFang SC", "Microsoft YaHei", sans-serif;
++  --serif: Georgia, "Noto Serif CJK SC", "Songti SC", STSong, serif;
++  --mono: ui-monospace, "Cascadia Code", "SFMono-Regular", Consolas, monospace;
++}
++:root[data-theme="dark"] {
+   color-scheme: dark;
+-  --bg: #000000;
+-  --bg-elevated: #24271E;
+-  --bg-soft: #24271E;
+-  --bg-hover: #2E59A7;
+-  --line: #2E59A7;
+-  --line-strong: #2E59A7;
+-  --text: #eaeae7;
+-  --text-soft: #eaeae7;
+-  --muted: #eaeae7;
+-  --accent: #eaeae7;
+-  --accent-deep: #eaeae7;
+-  --accent-alt: #eaeae7;
+-  --accent-warm: #eaeae7;
+-  --accent-earth: #eaeae7;
+-  --accent-soft: #eaeae7;
+-  --accent-line: #eaeae7;
+-  --warning: #eaeae7;
+-  --sidebar-width: 272px;
+-  --content-width: 1160px;
+-  --radius-lg: 24px;
+-  --radius-md: 16px;
+-  --radius-sm: 11px;
+-  --shadow: none;
++  --bg: #19211e;
++  --surface: #202b25;
++  --soft: #24322a;
++  --text: #e1e9df;
++  --secondary: #bcc9bd;
++  --muted: #a6b7a9;
++  --line: #35453a;
++  --line-strong: #536a59;
++  --accent: #a9cfb5;
++  --accent-hover: #c4e2cb;
++  --accent-soft: #2c4031;
++  --on-accent: #1a2c20;
++  --selection-bg: #52755c;
++  --selection-text: #ffffff;
++  --mark-bg: #555f32;
++  --mark-text: #f4f2d6;
++  --code-bg: #26352b;
+ }
+-
+ * { box-sizing: border-box; }
+-html { scroll-behavior: smooth; scroll-padding-top: 32px; }
+-body {
+-  margin: 0;
+-  min-height: 100vh;
+-  background: var(--bg);
+-  color: var(--text);
+-  font-family: Consolas, "华文中宋", STZhongsong, "Songti SC", SimSun, monospace;
+-  -webkit-font-smoothing: antialiased;
+-  text-rendering: optimizeLegibility;
+-}
+-a { color: inherit; text-decoration: none; }
+-button, input { font: inherit; }
+-button { color: inherit; }
+-::selection { background: var(--accent-deep); color: var(--text); }
+-::-webkit-scrollbar { width: 10px; height: 10px; }
+-::-webkit-scrollbar-track { background: transparent; }
+-::-webkit-scrollbar-thumb { background: var(--accent-earth); border: 3px solid var(--bg); border-radius: 99px; }
+-.svg-sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+-svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+-
+-.sidebar {
+-  position: fixed;
+-  inset: 0 auto 0 0;
+-  z-index: 30;
+-  width: var(--sidebar-width);
+-  display: flex;
+-  flex-direction: column;
+-  padding: 22px 14px 18px;
+-  border-right: 1px solid var(--line);
+-  background: var(--bg);
+-}
+-.brand {
+-  display: flex;
+-  align-items: center;
+-  gap: 12px;
+-  padding: 4px 8px 25px;
+-}
+-.brand-mark {
+-  width: 38px;
+-  height: 38px;
+-  display: grid;
+-  place-items: center;
+-  flex: 0 0 auto;
+-  border: 1px solid var(--line-strong);
+-  border-radius: 12px;
+-  background: var(--bg);
+-  font-weight: 720;
+-}
+-.brand strong, .brand span { display: block; }
+-.brand strong { font-size: 14px; letter-spacing: .02em; }
+-.brand span { margin-top: 3px; color: var(--muted); font-size: 11px; }
+-.primary-nav { display: grid; gap: 4px; }
+-.nav-link {
+-  display: flex;
+-  align-items: center;
+-  gap: 12px;
+-  min-height: 44px;
+-  padding: 0 12px;
+-  border: 1px solid transparent;
+-  border-radius: 11px;
+-  color: var(--text-soft);
+-  font-size: 14px;
+-  transition: .18s ease;
+-}
+-.nav-link:hover { background: var(--bg-soft); color: var(--text); }
+-.nav-link.active { border-color: var(--line-strong); background: var(--bg-hover); color: var(--text); }
+-.nav-link svg { width: 18px; height: 18px; }
+-.sidebar-footer { margin-top: auto; padding: 16px 10px 2px; border-top: 1px solid var(--line); }
+-.sidebar-footer p { margin: 0 0 9px; color: var(--accent-earth); font-size: 11px; }
+-.sidebar-footer a { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: 12px; }
+-.sidebar-footer a:hover { color: var(--text); }
+-.sidebar-footer svg { width: 14px; height: 14px; }
+-
+-.mobile-menu-button {
+-  display: none;
+-  position: fixed;
+-  top: 16px;
+-  left: 16px;
+-  z-index: 50;
+-  width: 42px;
+-  height: 42px;
+-  place-items: center;
+-  border: 1px solid var(--line);
+-  border-radius: 12px;
+-  background: var(--bg);
+-  cursor: pointer;
+-}
+-.sidebar-backdrop { display: none; }
+-
+-.main-shell { margin-left: var(--sidebar-width); overflow: hidden; }
+-.page-section { width: min(var(--content-width), calc(100% - 64px)); margin-inline: auto; }
+-.hero {
+-  position: relative;
+-  min-height: 100vh;
+-  display: grid;
+-  grid-template-columns: minmax(0, 1.35fr) minmax(300px, .65fr);
+-  align-items: center;
+-  gap: clamp(38px, 7vw, 110px);
+-  padding-block: 86px 76px;
+-}
+-.hero-copy, .profile-panel { position: relative; z-index: 1; }
+-.eyebrow { margin: 0 0 18px; color: var(--accent); font-size: 12px; font-weight: 700; letter-spacing: .2em; }
+-.hero h1 { margin: 0; font-size: clamp(62px, 10vw, 132px); line-height: .88; letter-spacing: -.075em; font-weight: 710; }
+-.hero-intro { max-width: 720px; margin: 30px 0 0; color: var(--text-soft); font-size: clamp(17px, 2vw, 23px); line-height: 1.72; letter-spacing: -.018em; }
+-.hero-actions { display: flex; flex-wrap: wrap; gap: 11px; margin-top: 32px; }
+-.action-button {
+-  display: inline-flex;
+-  align-items: center;
+-  justify-content: center;
+-  gap: 9px;
+-  min-height: 44px;
+-  padding: 0 16px;
+-  border: 1px solid var(--line-strong);
+-  border-radius: 12px;
+-  background: var(--bg-elevated);
+-  font-size: 13px;
+-  transition: .18s ease;
+-}
+-.action-button:hover { transform: translateY(-2px); border-color: var(--accent-warm); background: var(--bg-hover); }
+-.action-button.primary { border-color: var(--accent-line); background: var(--accent); color: var(--bg); }
+-.action-button.primary:hover { background: var(--accent-deep); }
+-.action-button svg { width: 17px; height: 17px; }
+-.hero-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 25px; }
+-.hero-tag { padding: 7px 10px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); background: transparent; font-size: 12px; }
+-
+-.glass-panel {
+-  border: 1px solid var(--line);
+-  background: var(--bg);
+-}
+-.profile-panel { padding: 24px; border-radius: var(--radius-lg); }
+-.profile-avatar {
+-  width: 100%; aspect-ratio: 1.26;
+-  overflow: hidden;
+-  border: 1px solid var(--line);
+-  border-radius: 18px;
+-}
+-.profile-avatar img { width: 100%; height: 100%; display: block; object-fit: cover; }
+-.profile-meta { display: flex; align-items: center; gap: 8px; margin: 17px 2px; color: var(--text-soft); font-size: 12px; }
+-.status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent-alt); }
+-.profile-panel dl { margin: 0; display: grid; }
+-.profile-panel dl > div { display: flex; justify-content: space-between; gap: 20px; padding: 13px 2px; border-top: 1px solid var(--line); }
+-.profile-panel dt { color: var(--muted); font-size: 12px; }
+-.profile-panel dd { margin: 0; text-align: right; color: var(--text-soft); font-size: 12px; }
+-
+-.content-section { padding-block: 88px; border-top: 1px solid var(--line); }
+-.standalone-section { min-height: 100vh; padding-top: 86px; border-top: 0; }
+-.section-heading { display: flex; align-items: end; justify-content: space-between; gap: 28px; margin-bottom: 34px; }
+-.section-heading > div { display: flex; align-items: baseline; gap: 14px; }
+-.section-index { color: var(--accent); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; }
+-.section-heading h2 { margin: 0; font-size: clamp(32px, 4vw, 52px); letter-spacing: -.045em; }
+-.section-heading p { max-width: 430px; margin: 0; color: var(--muted); font-size: 14px; line-height: 1.7; text-align: right; }
+-
+-.about-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 14px; }
+-.about-card {
+-  grid-column: span 4;
+-  min-height: 225px;
+-  padding: 24px;
+-  border: 1px solid var(--line);
+-  border-radius: var(--radius-md);
+-  background: var(--bg-elevated);
+-  transition: .2s ease;
+-}
+-.about-card:first-child { grid-column: span 7; }
+-.about-card:nth-child(2) { grid-column: span 5; }
+-.about-card:hover { border-color: var(--accent-line); transform: translateY(-3px); background: var(--bg-soft); }
+-.card-kicker { display: flex; align-items: center; justify-content: space-between; color: var(--accent); font-size: 11px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .08em; }
+-.card-kicker span:last-child { color: var(--accent-earth); }
+-.about-card h3 { margin: 48px 0 11px; font-size: 21px; letter-spacing: -.025em; }
+-.about-card p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.75; }
+-
+-.timeline { display: grid; }
+-.timeline-item {
+-  position: relative;
+-  display: grid;
+-  grid-template-columns: 120px minmax(0, 1fr) auto;
+-  gap: 24px;
+-  align-items: start;
+-  padding: 24px 0;
+-  border-top: 1px solid var(--line);
+-}
++html { scroll-behavior: smooth; scroll-padding-top: 110px; }
++body { margin: 0; min-width: 280px; background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 17px; line-height: 1.8; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
++[hidden] { display: none !important; }
++a { color: inherit; text-decoration: none; text-underline-offset: .22em; }
++button, input { font: inherit; color: inherit; }
++button { cursor: pointer; }
++svg { display: inline-block; width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; flex: 0 0 auto; }
++img { max-width: 100%; }
++p, h1, h2, h3, h4, h5, h6 { overflow-wrap: break-word; }
++h1, h2, h3, h4, h5, h6 { color: var(--text); font-weight: 600; }
++::selection { background: var(--selection-bg); color: var(--selection-text); -webkit-text-fill-color: var(--selection-text); }
++mark { background: var(--mark-bg); color: var(--mark-text); -webkit-text-fill-color: var(--mark-text); padding: .06em .16em; border-radius: 3px; }
++:focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; border-radius: 3px; }
++.container { width: min(var(--content-width), calc(100% - 80px)); margin-inline: auto; }
++.main-content { min-height: calc(100vh - 210px); }
++.main-content:focus { outline: none; }
++.visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
++.skip-link { position: fixed; top: 12px; left: 12px; z-index: 100; transform: translateY(-180%); padding: 10px 18px; color: var(--on-accent); background: var(--accent); border-radius: 6px; }
++.skip-link:focus { transform: none; }
++.site-header { border-bottom: 1px solid var(--line); background: var(--bg); }
++.header-inner { display: flex; align-items: center; min-height: 94px; gap: 40px; }
++.brand { display: inline-flex; align-items: center; gap: 21px; white-space: nowrap; margin-right: auto; }
++.brand-word { font: 600 27px/1 var(--serif); letter-spacing: -.045em; }
++.brand-dot { color: var(--accent); padding-left: 3px; }
++.brand-caption { font-size: 13px; letter-spacing: .1em; color: var(--muted); padding-top: 2px; }
++.primary-nav { display: flex; align-items: center; gap: 29px; }
++.primary-nav a { display: inline-flex; align-items: center; min-height: 48px; font-size: 15px; color: var(--secondary); position: relative; }
++.primary-nav a:hover, .primary-nav a[aria-current] { color: var(--accent); }
++.primary-nav a[aria-current]::after { position: absolute; content: ""; bottom: 3px; left: 0; right: 0; height: 2px; background: var(--accent); border-radius: 3px; }
++.header-actions { display: flex; align-items: center; gap: 18px; }
++.header-github { display: inline-flex; align-items: center; gap: 5px; min-height: 44px; font-size: 14px; color: var(--secondary); }
++.header-github:hover { color: var(--accent); }
++.theme-toggle { border: 0; background: transparent; display: grid; place-items: center; width: 40px; height: 44px; padding: 0; color: var(--muted); border-radius: 6px; }
++.theme-toggle:hover { background: var(--soft); color: var(--accent); }
++.theme-sun { display: none; }
++[data-theme="dark"] .theme-moon { display: none; }
++[data-theme="dark"] .theme-sun { display: block; }
++.hero { display: grid; grid-template-columns: minmax(0, 1fr) 260px; align-items: center; gap: 100px; padding: 84px 0 72px; }
++.eyebrow { margin: 0 0 14px; font-size: 11px; line-height: 1.6; font-weight: 600; letter-spacing: .16em; color: var(--accent); }
++.hero-eyebrow { display: flex; align-items: center; gap: 12px; margin-bottom: 26px; font-size: 12px; }
++.hero-eyebrow::before { content: ""; width: 26px; height: 1px; background: var(--accent); }
++.hero h1 { margin: 0; font-size: clamp(44px, 4.4vw, 64px); letter-spacing: .04em; font-weight: 550; line-height: 1.28; }
++.hero-roman { margin: 12px 0 27px; color: var(--muted); font: 22px/1.55 var(--serif); letter-spacing: .015em; }
++.hero-intro { max-width: 620px; margin: 0; color: var(--secondary); font-size: 18px; line-height: 1.95; }
++.hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 30px; }
++.button { display: inline-flex; align-items: center; justify-content: center; gap: 12px; min-height: 46px; padding: 9px 18px; border: 1px solid transparent; border-radius: 6px; font-size: 14px; line-height: 1.6; font-weight: 500; transition: background .18s, color .18s, border-color .18s; }
++.button svg { width: 16px; height: 16px; }
++.button-primary { background: var(--accent); color: var(--on-accent); }
++.button-primary:hover { background: var(--accent-hover); }
++.button-quiet { color: var(--secondary); padding-inline: 13px; }
++.button-quiet:hover { color: var(--accent); background: var(--soft); }
++.button-outline { border-color: var(--line-strong); background: var(--surface); color: var(--accent); }
++.profile-aside { text-align: center; }
++.profile-photo { width: 174px; height: 174px; margin: 0 auto 22px; padding: 6px; border: 1px solid var(--line); border-radius: 50%; background: var(--surface); }
++.profile-photo img { width: 160px; height: 160px; display: block; object-fit: cover; border-radius: 50%; filter: saturate(.7); }
++.profile-caption { margin: 0 0 18px; color: var(--muted); font-size: 13px; letter-spacing: .03em; }
++.status-dot { display: inline-block; width: 6px; height: 6px; margin-right: 7px; border-radius: 50%; background: var(--accent); vertical-align: 2px; }
++.profile-aside dl { margin: 0; padding-top: 13px; border-top: 1px solid var(--line); }
++.profile-aside dl div { display: flex; justify-content: space-between; gap: 12px; padding: 4px 0; font-size: 13px; }
++.profile-aside dt { color: var(--muted); }
++.profile-aside dd { margin: 0; text-align: right; color: var(--secondary); }
++.interests { border-block: 1px solid var(--line); padding: 26px 0 28px; }
++.interest-groups { display: grid; grid-template-columns: 1.35fr 1fr 1fr; gap: 32px; }
++.interest-group h3 { margin: 0 0 12px; font-size: 13px; color: var(--muted); font-weight: 500; letter-spacing: .06em; }
++.tags { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
++.tag { display: inline-block; font-size: 13px; line-height: 1.5; border-radius: 4px; background: var(--soft); color: var(--secondary); padding: 5px 9px; overflow-wrap: anywhere; }
++.interest-group:first-child .tag { color: var(--accent); background: var(--accent-soft); }
++.home-section { padding-top: 70px; }
++.last-section { padding-bottom: 22px; }
++.section-heading { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 32px; }
++.section-heading .eyebrow { margin-bottom: 10px; }
++.section-heading h2 { margin: 0; font-size: 28px; line-height: 1.4; letter-spacing: .015em; }
++.section-note { color: var(--muted); font-size: 14px; }
++.text-link { display: inline-flex; gap: 8px; align-items: center; min-height: 44px; padding: 0; color: var(--accent); font-size: 14px; line-height: 1.6; border: 0; background: transparent; }
++.text-link:hover { text-decoration: underline; }
++.text-link svg { width: 16px; height: 16px; }
++.focus-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 36px; }
++.focus-item { padding-top: 21px; border-top: 1px solid var(--line); }
++.item-kicker { margin: 0; display: flex; gap: 10px; align-items: center; color: var(--muted); font-size: 10px; line-height: 1.7; font-weight: 500; letter-spacing: .1em; }
++.item-number { color: var(--accent); font-family: var(--mono); font-size: 11px; letter-spacing: 0; }
++.focus-item h3 { margin: 18px 0 13px; font-size: 20px; line-height: 1.6; }
++.focus-item p { margin: 0; color: var(--secondary); font-size: 15px; line-height: 1.95; }
++.work-item { display: grid; grid-template-columns: 34px minmax(0, 1fr) 185px; gap: 23px; padding: 28px 0; border-top: 1px solid var(--line); align-items: start; }
++.work-item:last-child { border-bottom: 1px solid var(--line); }
++.work-index { padding-top: 2px; color: var(--muted); font: 12px/1.8 var(--mono); }
++.work-body h3 { margin: 9px 0 9px; font-size: 23px; line-height: 1.5; }
++.work-body h3 a { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
++.work-body h3 a:hover { color: var(--accent); }
++.work-body h3 svg { color: var(--accent); width: 18px; height: 18px; }
++.work-body > p:not(.item-kicker) { margin: 0; color: var(--secondary); font-size: 15px; line-height: 1.9; }
++.work-tags { justify-content: end; padding-top: 27px; gap: 6px; }
++.work-tags .tag { font-size: 12px; }
++.page-heading { padding: 74px 0 48px; }
++.page-heading .eyebrow { margin-bottom: 20px; }
++.page-heading h1 { margin: 0 0 22px; font-size: clamp(34px, 4vw, 48px); line-height: 1.35; font-weight: 550; letter-spacing: .02em; }
++.heading-period { padding-left: 5px; color: var(--accent); font-family: var(--serif); }
++.page-heading > p:last-child { max-width: 700px; margin: 0; color: var(--secondary); font-size: 17px; line-height: 1.9; }
++.index-section { margin-bottom: 68px; }
++.index-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
++.filter-pills { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
++.filter-pill { min-height: 44px; padding: 8px 17px; font-size: 14px; line-height: 1.6; border: 1px solid transparent; border-radius: 5px; background: transparent; color: var(--secondary); transition: background .18s, color .18s; }
++.filter-pill:hover { background: var(--soft); color: var(--accent); }
++.filter-pill[aria-pressed="true"] { color: var(--accent); background: var(--accent-soft); border-color: var(--line); }
++.search-box { display: flex; align-items: center; gap: 10px; min-height: 46px; width: min(310px, 100%); border-bottom: 1px solid var(--line-strong); padding: 4px 0; color: var(--muted); }
++.search-box:focus-within { border-color: var(--accent); }
++.search-box svg { width: 17px; height: 17px; }
++.search-box input { min-width: 0; width: 100%; outline: 0; border: 0; padding: 7px 0; background: transparent; color: var(--text); font-size: 14px; }
++.search-box input::placeholder { color: var(--muted); }
++.result-count { font-size: 13px; color: var(--muted); margin: 20px 0 15px; white-space: nowrap; }
++.blog-row { display: grid; grid-template-columns: 155px minmax(0, 1fr); gap: 35px; padding: 32px 0 34px; border-top: 1px solid var(--line); }
++.blog-row:last-child { border-bottom: 1px solid var(--line); }
++.blog-date { display: flex; flex-direction: column; align-items: start; gap: 8px; color: var(--muted); font-size: 13px; padding-top: 3px; }
++.blog-date span { font-size: 12px; color: var(--accent); }
++.blog-body h2, .blog-body h3 { margin: 0 0 12px; font-size: 23px; line-height: 1.6; }
++.blog-body a { display: flex; justify-content: space-between; align-items: baseline; gap: 24px; }
++.blog-body a svg { align-self: center; color: var(--accent); }
++.blog-body a:hover { color: var(--accent); }
++.blog-body > p { margin: 0 0 20px; color: var(--secondary); font-size: 16px; line-height: 1.85; }
++.blog-row.compact { padding: 24px 0; }
++.blog-row.compact .blog-date { flex-direction: row; flex-wrap: wrap; gap: 7px 12px; }
++.blog-row.compact h3 { font-size: 18px; margin: 0; }
++.empty-state { text-align: center; padding: 60px 24px; border-block: 1px solid var(--line); color: var(--secondary); }
++.empty-state h2 { font-size: 21px; font-weight: 500; margin: 0 0 12px; }
++.empty-state p { font-size: 15px; margin-bottom: 24px; }
++.resource-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; margin-top: 28px; }
++.resource-card { display: flex; flex-direction: column; padding: 30px; border: 1px solid var(--line); border-radius: 9px; background: var(--surface); scroll-margin-top: 28px; }
++.resource-card:target { outline: 2px solid var(--accent); outline-offset: 4px; }
++.resource-top { display: flex; gap: 12px; align-items: center; margin-bottom: 28px; }
++.resource-monogram { display: flex; align-items: center; justify-content: center; width: 43px; height: 43px; border-radius: 10px; background: var(--soft); color: var(--accent); font: 24px/1 var(--serif); }
++.resource-monogram span { font-size: 22px; margin-left: 2px; }
++.resource-type { color: var(--muted); font-size: 12px; }
++.resource-status { margin-left: auto; font-size: 12px; color: var(--muted); }
++.resource-status i { display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); margin-right: 6px; vertical-align: 2px; }
++.resource-card h2 { font-size: 23px; line-height: 1.5; margin: 0 0 14px; letter-spacing: -.025em; }
++.resource-description { color: var(--secondary); font-size: 16px; line-height: 1.9; margin: 0 0 22px; flex: 1; }
++.resource-card .tags { margin-bottom: 25px; }
++.resource-bottom { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; justify-content: space-between; border-top: 1px solid var(--line); padding-top: 13px; }
++.resource-platform { font-size: 11px; color: var(--muted); }
++.release-note { font-size: 13px; color: var(--muted); min-height: 44px; display: inline-flex; align-items: center; }
++.timeline-item { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 36px; padding: 32px 0 35px; border-top: 1px solid var(--line); scroll-margin-top: 28px; }
+ .timeline-item:last-child { border-bottom: 1px solid var(--line); }
+-.timeline-year { color: var(--muted); font-size: 13px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+-.timeline-body h3 { margin: 0 0 8px; font-size: 17px; font-weight: 600; }
+-.timeline-body p { max-width: 720px; margin: 0; color: var(--muted); font-size: 13px; line-height: 1.7; }
+-.timeline-badge { padding: 6px 9px; border: 1px solid var(--line); border-radius: 999px; color: var(--text-soft); font-size: 11px; white-space: nowrap; }
+-
+-.toolbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 22px; }
+-.search-box {
+-  width: min(390px, 100%);
+-  display: flex; align-items: center; gap: 10px;
+-  min-height: 43px; padding: 0 13px;
+-  border: 1px solid var(--line); border-radius: 12px; background: var(--bg-elevated);
+-}
+-.search-box:focus-within { border-color: var(--accent-line); }
+-.search-box svg { width: 17px; height: 17px; color: var(--muted); }
+-.search-box input { width: 100%; border: 0; outline: 0; color: var(--text); background: transparent; font-size: 13px; }
+-.search-box input::placeholder { color: var(--accent-earth); }
+-.blog-category-controls, .filter-pills { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 7px; }
+-.blog-category-controls { align-items: center; }
+-.filter-pill-group { display: inline-flex; }
+-.filter-pill { padding: 7px 11px; border: 1px solid var(--line); border-radius: 999px; background: transparent; color: var(--muted); font-size: 11px; cursor: pointer; }
+-.filter-pill:hover, .filter-pill.active { border-color: var(--accent-line); background: var(--accent-soft); color: var(--text); }
+-.filter-delete { width: 23px; margin-left: -5px; padding: 0; border: 1px solid var(--line); border-radius: 50%; background: var(--bg); color: var(--text); cursor: pointer; }
+-.filter-delete:hover { border-color: var(--accent-line); background: var(--bg-hover); }
+-.category-create { min-height: 30px; padding: 0 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--bg); color: var(--text); font-size: 11px; cursor: pointer; }
+-.category-create:hover { border-color: var(--accent-line); background: var(--bg-hover); }
+-
+-.card-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+-.blog-card {
+-  position: relative;
+-  min-height: 252px;
+-  display: flex;
+-  flex-direction: column;
+-  padding: 23px;
+-  border: 1px solid var(--line);
+-  border-radius: var(--radius-md);
+-  background: var(--bg-elevated);
+-  cursor: pointer;
+-  transition: .2s ease;
+-}
+-.blog-card:hover { transform: translateY(-3px); border-color: var(--accent-line); background: var(--bg-soft); }
+-.blog-meta { display: flex; align-items: center; justify-content: space-between; gap: 12px; color: var(--muted); font-size: 11px; }
+-.blog-meta span { display: inline-flex; align-items: center; gap: 6px; }
+-.blog-meta svg { width: 14px; height: 14px; }
+-.blog-card h3 { margin: 34px 0 10px; font-size: 21px; line-height: 1.35; letter-spacing: -.027em; }
+-.blog-card p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.7; }
+-.blog-footer { display: flex; align-items: end; justify-content: space-between; gap: 15px; margin-top: auto; padding-top: 24px; }
+-.blog-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+-.blog-tags span { color: var(--accent-earth); font-size: 10px; }
+-.blog-open { width: 34px; height: 34px; display: grid; place-items: center; flex: 0 0 auto; border: 1px solid var(--line); border-radius: 50%; color: var(--text-soft); }
+-.blog-open svg { width: 15px; height: 15px; }
+-.empty-state { padding: 60px 20px; border: 1px dashed var(--line); border-radius: var(--radius-md); text-align: center; color: var(--muted); }
+-
+-.resource-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+-.resource-card {
+-  min-height: 235px;
+-  display: flex;
+-  flex-direction: column;
+-  padding: 22px;
+-  border: 1px solid var(--line);
+-  border-radius: var(--radius-md);
+-  background: var(--bg-elevated);
+-  transition: .2s ease;
++.timeline-item:target .timeline-body { border-left: 2px solid var(--accent); padding-left: 18px; }
++.timeline-year { color: var(--muted); font: 14px/1.8 var(--mono); padding-top: 3px; }
++.timeline-body h2 { font-size: 21px; line-height: 1.65; margin: 0 0 13px; max-width: 780px; }
++.timeline-body p { color: var(--secondary); font-size: 17px; line-height: 1.95; margin: 0 0 18px; max-width: 790px; }
++.badge { display: inline-block; padding: 4px 10px; font-size: 13px; color: var(--accent); background: var(--accent-soft); border-radius: 4px; line-height: 1.6; }
++.article-navigation { display: flex; justify-content: space-between; align-items: center; padding-top: 34px; gap: 24px; }
++.article-site-note { color: var(--muted); font-size: 10px; letter-spacing: .15em; }
++.article-header { max-width: 790px; padding: 38px 0 35px; margin-bottom: 32px; border-bottom: 1px solid var(--line); }
++.article-header h1 { font-size: clamp(28px, 3.1vw, 42px); line-height: 1.5; letter-spacing: -.025em; margin: 0 0 22px; font-weight: 600; }
++.article-meta { display: flex; flex-wrap: wrap; gap: 10px; color: var(--muted); font-size: 13px; }
++.article-summary { color: var(--secondary); font-size: 17px; line-height: 1.85; margin: 24px 0 18px; }
++.reading-layout { display: grid; grid-template-columns: minmax(0, 760px) minmax(180px, 1fr); gap: 64px; align-items: start; padding-bottom: 50px; }
++.prose { color: var(--text); font-size: 18px; line-height: 1.95; min-width: 0; overflow-wrap: anywhere; }
++.prose > :first-child { margin-top: 0; }
++.prose p { margin: 0 0 1.35em; }
++.prose h2, .prose h3, .prose h4, .prose h5, .prose h6 { margin: 1.9em 0 .8em; line-height: 1.6; font-weight: 600; position: relative; scroll-margin-top: 30px; }
++.prose h2 { font-size: 27px; }
++.prose h3 { font-size: 24px; }
++.prose h4 { font-size: 21px; }
++.prose h5 { font-size: 19px; }
++.prose h6 { font-size: 18px; }
++.prose a { color: var(--accent); text-decoration: underline; text-decoration-color: var(--line-strong); text-decoration-thickness: 1px; }
++.prose a:hover { text-decoration-color: var(--accent); }
++.prose .heading-anchor { color: var(--muted); text-decoration: none; font-size: .75em; margin-left: .55em; opacity: 0; }
++.prose :is(h2,h3,h4,h5,h6):hover .heading-anchor, .prose .heading-anchor:focus-visible { opacity: 1; }
++.prose ul, .prose ol { padding-left: 1.5em; margin: 0 0 1.4em; }
++.prose li { padding-left: .2em; margin: .48em 0; }
++.prose li > p { margin: .4em 0; }
++.prose li > ul, .prose li > ol { margin: .4em 0; }
++.prose li::marker { color: var(--accent); }
++.prose blockquote { margin: 1.5em 0; border-left: 3px solid var(--line-strong); padding: 10px 22px; color: var(--secondary); background: var(--soft); border-radius: 0 5px 5px 0; }
++.prose blockquote > :last-child { margin-bottom: 0; }
++.prose code { padding: .16em .35em; border-radius: 4px; background: var(--code-bg); color: var(--text); font-family: var(--mono); font-size: .86em; }
++.prose pre { overflow-x: auto; max-width: 100%; padding: 20px 22px; margin: 1.5em 0; background: var(--code-bg); color: var(--text); border: 1px solid var(--line); border-radius: 7px; tab-size: 4; line-height: 1.7; }
++.prose pre code { padding: 0; background: transparent; border-radius: 0; white-space: pre; font-size: 14px; overflow-wrap: normal; }
++.prose hr { border: 0; border-top: 1px solid var(--line); margin: 2.2em 0; }
++.prose img { display: block; height: auto; margin: 20px auto; border-radius: 6px; }
++.table-scroll { overflow-x: auto; margin: 1.5em 0; }
++.prose table { border-collapse: collapse; width: 100%; font-size: .9em; }
++.prose th, .prose td { border: 1px solid var(--line); padding: 10px 14px; text-align: left; min-width: 100px; }
++.prose th { background: var(--soft); font-weight: 600; }
++.toc-panel { position: sticky; top: 35px; padding-left: 22px; border-left: 1px solid var(--line); font-size: 13px; max-height: calc(100vh - 60px); overflow-y: auto; }
++.toc-label { color: var(--text); margin: 0 0 13px; font-size: 13px; font-weight: 600; }
++#articleToc { display: grid; gap: 2px; }
++#articleToc a { display: block; padding: 7px 3px; color: var(--muted); line-height: 1.65; overflow-wrap: anywhere; }
++#articleToc a:hover, #articleToc a.active { color: var(--accent); }
++#articleToc a.active { font-weight: 600; }
++#articleToc a[data-level="1"] { padding-left: 10px; }
++#articleToc a[data-level="2"], #articleToc a[data-level="3"], #articleToc a[data-level="4"], #articleToc a[data-level="5"] { padding-left: 20px; font-size: 12px; }
++.article-actions { display: grid; gap: 6px; margin-top: 24px; padding-top: 14px; border-top: 1px solid var(--line); }
++.article-actions .text-link { font-size: 12px; justify-content: flex-start; text-align: left; }
++#copyStatus { display: block; font-size: 12px; color: var(--muted); }
++#copyStatus:empty { display: none; }
++.copy-link-fallback { display: block; width: 100%; max-width: 100%; font-size: 12px; padding: 7px; background: var(--surface); color: var(--text); border: 1px solid var(--line-strong); border-radius: 4px; }
++.article-state { padding: 55px 0; max-width: 760px; color: var(--secondary); }
++.article-state:empty { display: none; }
++.article-state h1 { font-size: 28px; }
++.article-state a { color: var(--accent); text-decoration: underline; }
++.retry-button { border: 1px solid var(--line-strong); border-radius: 5px; background: var(--surface); padding: 10px 18px; color: var(--accent); }
++.site-footer { display: flex; justify-content: space-between; align-items: center; gap: 24px; border-top: 1px solid var(--line); padding-block: 30px 35px; margin-top: 65px; color: var(--muted); font-size: 13px; }
++.site-footer > div { display: flex; align-items: center; gap: 22px; }
++.footer-name { font: 600 20px/1.5 var(--serif); color: var(--text); }
++.back-top { display: inline-flex; align-items: center; gap: 12px; min-height: 44px; }
++.back-top:hover { color: var(--accent); }
++.noscript-note { padding: 20px; margin: 30px 0; color: var(--secondary); border: 1px solid var(--line); }
++.noscript-note a { text-decoration: underline; }
++@media (max-width: 1000px) {
++  .container { width: calc(100% - 64px); }
++  .brand-caption { display: none; }
++  .header-inner { gap: 30px; }
++  .hero { grid-template-columns: minmax(0, 1fr) 220px; gap: 60px; padding-top: 65px; }
++  .interest-groups { gap: 22px; }
++  .focus-grid { gap: 25px; }
++  .work-item { grid-template-columns: 30px minmax(0, 1fr) 155px; gap: 18px; }
++  .reading-layout { grid-template-columns: minmax(0, 1fr) 180px; gap: 35px; }
++  .resource-card { padding: 25px; }
+ }
+-.resource-card:hover { transform: translateY(-3px); border-color: var(--accent-line); background: var(--bg-soft); }
+-.resource-icon { width: 42px; height: 42px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 12px; background: var(--bg-hover); color: var(--accent-warm); }
+-.resource-icon svg { width: 20px; height: 20px; }
+-.resource-card h3 { margin: 28px 0 9px; font-size: 17px; }
+-.resource-card p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.65; }
+-.resource-bottom { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: auto; padding-top: 22px; color: var(--accent-earth); font-size: 11px; }
+-.resource-bottom svg { width: 15px; height: 15px; }
+-.resource-bottom span:last-child { display: inline-flex; align-items: center; gap: 6px; }
+-
+-footer { width: min(var(--content-width), calc(100% - 64px)); margin-inline: auto; display: flex; justify-content: space-between; gap: 20px; padding: 28px 0 40px; border-top: 1px solid var(--line); color: var(--accent-earth); font-size: 11px; }
+-footer a { display: inline-flex; align-items: center; gap: 7px; color: var(--muted); }
+-footer a:hover { color: var(--text); }
+-footer svg { width: 14px; height: 14px; transform: rotate(-90deg); }
+-
+-.article-dialog {
+-  width: min(900px, calc(100% - 32px));
+-  max-height: calc(100vh - 48px);
+-  padding: 0;
+-  border: 1px solid var(--bg);
+-  border-radius: 20px;
+-  background: var(--bg-hover);
+-  color: var(--text);
+-}
+-.article-dialog::backdrop { background: var(--bg); }
+-.article-dialog-shell { position: relative; padding: clamp(28px, 6vw, 68px); font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; }
+-.dialog-close { position: sticky; z-index: 3; top: 0; float: right; width: 38px; height: 38px; display: grid; place-items: center; border: 1px solid var(--bg); border-radius: 12px; background: var(--bg); color: var(--accent); cursor: pointer; }
+-.dialog-close:hover { background: var(--accent); color: var(--bg); }
+-.dialog-close svg { width: 17px; height: 17px; }
+-.markdown-body { max-width: 720px; margin-inline: auto; color: var(--text); font-size: 15px; line-height: 1.84; }
+-.markdown-body h1, .markdown-body h2, .markdown-body h3 { color: var(--text); line-height: 1.25; letter-spacing: -.03em; }
+-.markdown-body h1 { margin: 0 0 30px; padding: 14px 18px; border-left: 5px solid var(--bg-hover); background: var(--bg); color: var(--text); font-size: clamp(34px, 6vw, 56px); }
+-.markdown-body h2 { margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 2px solid var(--text); font-size: 26px; }
+-.markdown-body h3 { margin: 34px 0 12px; padding-left: 12px; border-left: 4px solid var(--text); font-size: 20px; }
+-.markdown-body p { margin: 0 0 18px; }
+-.markdown-body a { color: var(--text); font-weight: 700; text-decoration: underline; text-decoration-color: var(--bg); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+-.markdown-body ul, .markdown-body ol { padding-left: 24px; }
+-.markdown-body li { margin: 7px 0; }
+-.markdown-body blockquote { margin: 24px 0; padding: 14px 18px; border-left: 4px solid var(--bg-hover); background: var(--bg); color: var(--text); }
+-.markdown-body code { padding: 2px 6px; border: 1px solid var(--bg-hover); border-radius: 6px; background: var(--bg); color: var(--bg-hover); font-family: Consolas, "Courier New", monospace; font-size: .88em; }
+-.markdown-body pre { overflow: auto; margin: 24px 0; padding: 18px; border: 1px solid var(--text); border-radius: 12px; background: var(--bg); color: var(--bg-hover); }
+-.markdown-body pre code { display: block; padding: 0; border: 0; background: transparent; color: inherit; line-height: 1.7; }
+-.markdown-body hr { margin: 36px 0; border: 0; border-top: 1px solid var(--text); }
+-.markdown-byline { margin: -16px 0 38px; color: var(--text); font-size: 12px; }
+-
+-@media (max-width: 1040px) {
+-  :root { --sidebar-width: 236px; }
+-  .hero { grid-template-columns: 1fr; min-height: auto; padding-top: 125px; }
+-  .profile-panel { max-width: 520px; }
+-  .profile-avatar { aspect-ratio: 1.8; }
+-  .about-card, .about-card:first-child, .about-card:nth-child(2) { grid-column: span 6; }
+-  .resource-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+-}
+-
+ @media (max-width: 760px) {
+-  :root { --sidebar-width: 280px; }
+-  html { scroll-padding-top: 72px; }
+-  .mobile-menu-button { display: grid; }
+-  .sidebar { transform: translateX(-102%); transition: transform .24s ease; }
+-  .sidebar.open { transform: translateX(0); }
+-  .sidebar-backdrop { position: fixed; inset: 0; z-index: 20; background: var(--bg); }
+-  .sidebar-backdrop.show { display: block; }
+-  .main-shell { margin-left: 0; }
+-  .page-section, footer { width: min(100% - 32px, var(--content-width)); }
+-  .hero { padding-top: 115px; padding-bottom: 66px; gap: 44px; }
+-  .hero h1 { font-size: clamp(56px, 20vw, 92px); }
+-  .hero-intro { font-size: 17px; }
+-  .profile-avatar { aspect-ratio: 1.5; }
+-  .content-section { padding-block: 66px; }
+-  .standalone-section { min-height: 100vh; padding-top: 104px; }
+-  .section-heading { display: block; }
+-  .section-heading p { margin-top: 12px; text-align: left; }
+-  .about-grid, .card-grid, .resource-grid { grid-template-columns: 1fr; }
+-  .about-card, .about-card:first-child, .about-card:nth-child(2) { grid-column: auto; min-height: 210px; }
+-  .timeline-item { grid-template-columns: 76px 1fr; gap: 15px; }
+-  .timeline-badge { grid-column: 2; justify-self: start; }
+-  .toolbar { align-items: stretch; flex-direction: column; }
+-  .search-box { width: 100%; }
+-  .blog-category-controls, .filter-pills { justify-content: flex-start; }
+-  footer { flex-direction: column; }
++  .container { width: calc(100% - 44px); }
++  .header-inner { min-height: 84px; flex-wrap: wrap; gap: 0; padding-block: 18px 0; }
++  .brand { order: 1; }
++  .brand-word { font-size: 25px; }
++  .header-actions { order: 2; gap: 14px; }
++  .primary-nav { order: 3; width: 100%; justify-content: space-between; gap: 12px; margin-top: 11px; }
++  .primary-nav a { min-height: 45px; padding-inline: 7px; font-size: 14px; }
++  .primary-nav a[aria-current]::after { left: 7px; right: 7px; bottom: 0; }
++  .hero { grid-template-columns: minmax(0, 1fr); gap: 36px; padding: 48px 0 35px; }
++  .hero h1 { font-size: 48px; }
++  .hero-eyebrow { margin-bottom: 21px; font-size: 11px; }
++  .hero-roman { font-size: 21px; margin-bottom: 22px; }
++  .hero-intro { font-size: 17px; line-height: 1.95; }
++  .hero-actions { margin-top: 24px; gap: 5px; }
++  .button { font-size: 13px; gap: 8px; padding-inline: 14px; }
++  .profile-aside { display: grid; grid-template-columns: 86px minmax(0, 1fr); gap: 0 22px; text-align: left; align-items: start; padding-top: 28px; border-top: 1px solid var(--line); }
++  .profile-photo { width: 86px; height: 86px; padding: 4px; margin: 0; grid-row: 1 / 3; }
++  .profile-photo img { width: 76px; height: 76px; }
++  .profile-caption { margin: 0 0 8px; font-size: 12px; }
++  .profile-aside dl { border: 0; padding: 0; }
++  .profile-aside dl div { padding-block: 2px; font-size: 12px; }
++  .interests { padding: 25px 0; }
++  .interest-groups { grid-template-columns: 1fr; gap: 22px; }
++  .interest-group h3 { margin-bottom: 10px; }
++  .tag { font-size: 12px; }
++  .home-section { padding-top: 48px; }
++  .section-heading { align-items: end; margin-bottom: 26px; gap: 18px; }
++  .section-heading h2 { font-size: 25px; }
++  .section-heading .eyebrow { font-size: 9px; letter-spacing: .12em; }
++  .section-note { display: none; }
++  .text-link { font-size: 13px; }
++  .focus-grid { grid-template-columns: 1fr; gap: 28px; }
++  .focus-item { padding-top: 19px; }
++  .focus-item h3 { font-size: 21px; margin-top: 13px; }
++  .focus-item p { font-size: 16px; }
++  .work-item { grid-template-columns: 22px minmax(0, 1fr); gap: 8px 15px; padding-block: 26px; }
++  .work-body h3 { font-size: 22px; }
++  .work-body > p:not(.item-kicker) { font-size: 16px; }
++  .work-tags { grid-column: 2; justify-content: start; padding-top: 8px; }
++  .page-heading { padding: 45px 0 32px; }
++  .page-heading h1 { font-size: 36px; margin-bottom: 18px; }
++  .page-heading > p:last-child { font-size: 16px; }
++  .page-heading .eyebrow { font-size: 10px; margin-bottom: 16px; }
++  .index-toolbar { flex-wrap: wrap; gap: 12px; }
++  .search-box { width: 100%; order: -1; margin-bottom: 8px; }
++  .search-box input { font-size: 16px; }
++  .filter-pills { gap: 2px; }
++  .filter-pill { padding-inline: 13px; font-size: 13px; }
++  .result-count { margin-block: 16px; font-size: 12px; }
++  .blog-row { grid-template-columns: 1fr; gap: 13px; padding-block: 25px; }
++  .blog-date { flex-direction: row; gap: 14px; align-items: center; font-size: 12px; }
++  .blog-body h2 { font-size: 21px; }
++  .blog-body a { gap: 16px; }
++  .blog-body > p { font-size: 16px; }
++  .blog-row.compact h3 { font-size: 18px; }
++  .resource-grid { grid-template-columns: 1fr; margin-top: 16px; gap: 18px; }
++  .resource-card { padding: 24px; }
++  .resource-top { margin-bottom: 24px; gap: 10px; }
++  .resource-card h2 { font-size: 23px; }
++  .resource-status { font-size: 11px; }
++  .resource-description { font-size: 16px; }
++  .resource-platform { font-size: 10px; }
++  .timeline-item { grid-template-columns: 1fr; gap: 10px; padding-block: 27px; }
++  .timeline-year { font-size: 13px; }
++  .timeline-body h2 { font-size: 20px; }
++  .timeline-body p { font-size: 17px; }
++  .article-navigation { padding-top: 22px; }
++  .article-site-note { display: none; }
++  .article-header { padding-top: 26px; margin-bottom: 24px; }
++  .article-header h1 { font-size: 29px; line-height: 1.5; }
++  .article-meta { font-size: 12px; }
++  .article-summary { font-size: 16px; }
++  .reading-layout { display: flex; flex-direction: column; gap: 30px; padding-bottom: 20px; }
++  .prose { order: 2; width: 100%; font-size: 18px; line-height: 1.95; }
++  .prose h2 { font-size: 25px; }
++  .prose h3 { font-size: 22px; }
++  .prose h4 { font-size: 20px; }
++  .prose pre { padding: 16px; }
++  .prose pre code { font-size: 13px; }
++  .prose blockquote { padding-inline: 16px; }
++  .toc-panel { order: 1; width: 100%; position: static; max-height: 270px; padding: 18px 20px; border: 1px solid var(--line); background: var(--soft); border-radius: 6px; }
++  #articleToc a { min-height: 36px; }
++  .article-actions { display: flex; flex-wrap: wrap; column-gap: 20px; margin-top: 12px; }
++  .article-actions .text-link { font-size: 13px; }
++  .site-footer { margin-top: 44px; padding-block: 23px; gap: 18px; font-size: 12px; }
++  .site-footer > div { gap: 10px; flex-wrap: wrap; }
++  .footer-name { font-size: 18px; }
++  .back-top { white-space: nowrap; gap: 6px; }
+ }
+-
+-@media (max-width: 430px) {
+-  .hero-actions { display: grid; grid-template-columns: 1fr; }
+-  .action-button { width: 100%; }
+-  .profile-panel { padding: 17px; }
+-  .timeline-item { grid-template-columns: 1fr; }
+-  .timeline-badge { grid-column: 1; }
+-  .about-card, .blog-card, .resource-card { padding: 20px; }
+-  .article-dialog-shell { padding: 26px 20px 42px; }
++@media (max-width: 360px) {
++  .container { width: calc(100% - 32px); }
++  .header-github { font-size: 12px; }
++  .hero h1 { font-size: 44px; }
++  .resource-card { padding: 20px; }
++  .resource-platform { display: none; }
++  .filter-pill { padding-inline: 11px; }
+ }
+-
+ @media (prefers-reduced-motion: reduce) {
+-  *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; animation: none !important; }
++  html { scroll-behavior: auto; }
++  *, *::before, *::after { animation: none !important; transition: none !important; }
++}
++@media (forced-colors: active) {
++  .tag, .badge, .filter-pill[aria-pressed="true"], .button-primary { border: 1px solid ButtonText; }
++  .primary-nav a[aria-current] { text-decoration: underline; }
++}
++@media print {
++  :root, :root[data-theme="dark"] { --bg: #fff; --text: #111; --secondary: #333; --muted: #444; --line: #ccc; --code-bg: #f3f3f3; --accent: #204b35; color-scheme: light; }
++  .site-header, .site-footer, .article-navigation, .toc-panel, .skip-link, .hero-actions { display: none !important; }
++  .container { width: 100%; }
++  .article-header { max-width: none; padding-top: 0; }
++  .reading-layout { display: block; }
++  .prose { font-size: 11pt; line-height: 1.7; }
++  .prose pre { white-space: pre-wrap; overflow: visible; }
++  .prose pre code { white-space: pre-wrap; overflow-wrap: anywhere; }
++  .prose a { text-decoration: underline; }
++  .heading-anchor { display: none; }
++  .resource-card, .timeline-item { break-inside: avoid; }
+ }
+diff --git a/blogs.html b/blogs.html
+index 25ffec457d8f26d30f231ac2473dce9ada1cfbba..7e5f923f45496d1a88305575d5a599bf9fd96124 100644
+--- a/blogs.html
++++ b/blogs.html
+@@ -1,51 +1,44 @@
+ <!doctype html>
+-<html lang="zh-CN">
++<html lang="zh-CN" data-theme="light">
+ <head>
+-  <meta charset="UTF-8" />
+-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+-  <meta name="description" content="T_IM 的技术笔记与学习记录。" />
+-  <meta name="theme-color" content="#24271E" />
+-  <title>T_IM · Blogs</title>
+-  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+-  <link rel="stylesheet" href="assets/styles.css" />
++  <meta charset="UTF-8"/>
++  <meta name="viewport" content="width=device-width, initial-scale=1"/>
++  <meta name="description" content="T_IM 的技术笔记、研究思考与学习记录。"/>
++  <meta name="theme-color" content="#fafbf8"/>
++  <meta name="color-scheme" content="light dark"/>
++  <meta property="og:title" content="文章与笔记 · T_IM"/>
++  <meta property="og:description" content="T_IM 的技术笔记、研究思考与学习记录。"/>
++  <meta property="og:type" content="website"/>
++  <meta property="og:url" content="https://exyeus.github.io/blogs.html"/>
++  <meta property="og:locale" content="zh_CN"/>
++  <link rel="canonical" href="https://exyeus.github.io/blogs.html"/>
++  <title>文章与笔记 · T_IM</title>
++  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml"/>
++  <script>try { document.documentElement.dataset.theme = localStorage.getItem('tim-homepage-theme') === 'dark' ? 'dark' : 'light'; } catch {}</script>
++  <link rel="stylesheet" href="assets/styles.css"/>
++  <script src="content/site.js" defer></script>
++  <script src="content/blogs.js" defer></script>
++  <script src="assets/app.js" defer></script>
+ </head>
+ <body data-page="blogs">
+-  <svg class="svg-sprite" aria-hidden="true">
+-    <symbol id="icon-home" viewBox="0 0 24 24"><path d="M3.5 10.7 12 3.8l8.5 6.9v8.1a1.7 1.7 0 0 1-1.7 1.7H5.2a1.7 1.7 0 0 1-1.7-1.7z"/><path d="M9.2 20.5v-6.1h5.6v6.1"/></symbol>
+-    <symbol id="icon-award" viewBox="0 0 24 24"><circle cx="12" cy="8.3" r="5.2"/><path d="m8.8 12.6-1 8 4.2-2.4 4.2 2.4-1-8"/><path d="m10.1 8.2 1.3 1.3 2.8-2.8"/></symbol>
+-    <symbol id="icon-note" viewBox="0 0 24 24"><path d="M6 3.5h9.2l3.8 3.8v13.2H6z"/><path d="M15 3.8v4h3.8M9 12h6M9 15.5h6"/></symbol>
+-    <symbol id="icon-tool" viewBox="0 0 24 24"><path d="M14.7 6.1a4.4 4.4 0 0 0-5.8 5.8L3.7 17a2.3 2.3 0 0 0 3.3 3.3l5.1-5.2a4.4 4.4 0 0 0 5.8-5.8l-2.6 2.5-2.7-.5-.5-2.7z"/></symbol>
+-    <symbol id="icon-arrow" viewBox="0 0 24 24"><path d="M5 12h14M14 7l5 5-5 5"/></symbol>
+-    <symbol id="icon-search" viewBox="0 0 24 24"><circle cx="10.7" cy="10.7" r="6.7"/><path d="m15.7 15.7 4.3 4.3"/></symbol>
+-    <symbol id="icon-calendar" viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="17" height="15" rx="2"/><path d="M7.5 3v5M16.5 3v5M3.5 10h17"/></symbol>
+-    <symbol id="icon-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+-    <symbol id="icon-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+-  </svg>
+-  <button class="mobile-menu-button" id="mobileMenuButton" aria-label="打开导航" aria-expanded="false"><svg><use href="#icon-menu"></use></svg></button>
+-  <aside class="sidebar" id="sidebar">
+-    <div class="brand"><a href="index.html" class="brand-mark" aria-label="返回首页">T</a><div><strong id="brandName">T_IM</strong><span id="brandRole">CS Undergraduate</span></div></div>
+-    <nav class="primary-nav" aria-label="主导航">
+-      <a href="index.html" class="nav-link"><svg><use href="#icon-home"></use></svg><span>个人信息</span></a>
+-      <a href="blogs.html" class="nav-link active"><svg><use href="#icon-note"></use></svg><span>Blogs</span></a>
+-      <a href="resources.html" class="nav-link"><svg><use href="#icon-tool"></use></svg><span>资源工具</span></a>
+-      <a href="projects.html" class="nav-link"><svg><use href="#icon-award"></use></svg><span>项目经历</span></a>
+-    </nav>
+-    <div class="sidebar-footer"><p>Plain HTML · Zero build</p><a href="README.md">编辑说明 <svg><use href="#icon-arrow"></use></svg></a></div>
+-  </aside>
+-  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+-  <main class="main-shell">
+-    <section class="page-section content-section standalone-section" id="blogs">
+-      <div class="section-heading"><div><span class="section-index">01</span><h2>Blogs</h2></div><p>技术笔记、研究思考与学习记录。</p></div>
+-      <div class="toolbar"><label class="search-box"><svg><use href="#icon-search"></use></svg><input id="blogSearch" type="search" placeholder="搜索文章标题、摘要或标签" /></label><div class="blog-category-controls"><div class="filter-pills" id="blogFilters"></div><button class="category-create" id="categoryCreate" type="button">＋ 新建分区</button></div></div>
+-      <div class="card-grid" id="blogList"></div>
+-      <div class="empty-state" id="blogEmpty" hidden>没有找到匹配的文章。</div>
++  <a class="skip-link" href="#main">跳到正文</a>
++  <header class="site-header">
++    <div class="header-inner container">
++      <a class="brand" href="index.html" aria-label="T_IM · 返回首页"><span class="brand-word">T_IM<span class="brand-dot">.</span></span><span class="brand-caption">学习 · 思考 · 构建</span></a>
++      <nav class="primary-nav" aria-label="主导航"><a href="index.html">关于</a><a href="blogs.html" aria-current="page">文章</a><a href="resources.html">工具</a><a href="projects.html">经历</a></nav>
++      <div class="header-actions"><a class="header-github" href="https://github.com/Exyeus" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a><button class="theme-toggle" id="themeToggle" type="button" aria-label="切换为深色主题" aria-pressed="false"><svg class="theme-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 13A8.5 8.5 0 0 1 11 3.5 8.5 8.5 0 1 0 20.5 13Z"/></svg><svg class="theme-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg></button></div>
++    </div>
++  </header>
++  <main id="main" class="container main-content" tabindex="-1">
++    <header class="page-heading"><p class="eyebrow">NOTES & REFLECTIONS</p><h1>文章与笔记<span class="heading-period">.</span></h1><p>记录理解系统的过程，也留下一些尚未想完的问题。</p></header>
++    <section aria-label="文章目录" class="index-section">
++      <div class="index-toolbar"><div class="filter-pills" id="blogFilters" role="group" aria-label="按文章分类筛选"></div><label class="search-box" for="blogSearch"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 4.5 4.5"/></svg><span class="visually-hidden">搜索文章标题、摘要或标签</span><input id="blogSearch" type="search" placeholder="搜索标题、摘要或标签" autocomplete="off"/></label></div>
++      <p class="result-count" id="blogCount" role="status" aria-live="polite"></p>
++      <div class="blog-list" id="blogList"></div>
++      <div class="empty-state" id="blogEmpty" hidden><h2>暂时没有找到匹配的文章</h2><p>试试其他关键词，或回到完整的文章列表。</p><button class="button button-outline" id="clearBlogFilters" type="button">清除筛选</button></div>
+     </section>
+-    <footer><span id="footerText">Built with plain HTML, CSS and JavaScript.</span><a href="index.html">Home <svg><use href="#icon-arrow"></use></svg></a></footer>
++    <noscript><p class="noscript-note">此页的目录与工具列表需要 JavaScript。你也可以在 <a href="https://github.com/Exyeus/exyeus.github.io/tree/main/content">GitHub 阅读原始内容</a>。</p></noscript>
+   </main>
+-  <dialog class="article-dialog" id="articleDialog"><div class="article-dialog-shell"><button class="dialog-close" id="dialogClose" aria-label="关闭文章"><svg><use href="#icon-close"></use></svg></button><article id="articleContent" class="markdown-body"></article></div></dialog>
+-  <script src="content/site.js"></script>
+-  <script src="content/blogs.js"></script>
+-  <script src="assets/markdown.js"></script>
+-  <script src="assets/app.js?v=20260826-6"></script>
++  <footer class="site-footer container"><div><a href="index.html" class="footer-name">T_IM<span class="brand-dot">.</span></a><span>保持好奇，认真做事。</span></div><a href="#main" class="back-top">回到顶部 <span aria-hidden="true">↑</span></a></footer>
+ </body>
+ </html>
+diff --git a/content/blogs.js b/content/blogs.js
+index 3242407d7e7a67ab871cf5bd9b6492dfda2351ff..27c1fd96a58fcc2a1ffe67b90fba3664334ccaec 100644
+--- a/content/blogs.js
++++ b/content/blogs.js
+@@ -10,6 +10,7 @@ window.BLOG_SECTIONS = ["技术", "想法", "书摘"];
+ 
+ window.BLOG_DATA = [
+   {
++    slug: "zero-build-homepage",
+     title: "这个主页为什么坚持零构建",
+     date: "2026-08-05",
+     category: "Project",
+@@ -18,6 +19,7 @@ window.BLOG_DATA = [
+     file: "content/blogs/zero-build-homepage.md"
+   },
+   {
++    slug: "dbms-competition-2026",
+     title: "系统能力大赛2026-DBMS赛道参赛总结",
+     date: "2026-08-23",
+     category: "技术",
+diff --git "a/content/blogs/2026-\346\225\260\346\215\256\345\272\223\350\265\233\345\220\216\346\200\273\347\273\223.md" "b/content/blogs/2026-\346\225\260\346\215\256\345\272\223\350\265\233\345\220\216\346\200\273\347\273\223.md"
+index 02b7e6a07e310d63ed65fa367f3a5dde0e5fcd53..7c7e87f8b4bd9d9145779613c4a749ae23bd32ec 100644
+--- "a/content/blogs/2026-\346\225\260\346\215\256\345\272\223\350\265\233\345\220\216\346\200\273\347\273\223.md"
++++ "b/content/blogs/2026-\346\225\260\346\215\256\345\272\223\350\265\233\345\220\216\346\200\273\347\273\223.md"
+@@ -1,4 +1,6 @@
+-[Raj Jain Performance Analysis resources](https://www.cs.wustl.edu/~jain/books/perf_toc.htm?utm_source=chatgpt.com)### 协作方面  
++[Raj Jain Performance Analysis resources](https://www.cs.wustl.edu/~jain/books/perf_toc.htm?utm_source=chatgpt.com)
++
++### 协作方面
+ 
+ 1. 线下交流胜过线上交流
+ 2. 有好 idea 及时说
+@@ -39,7 +41,7 @@
+ 资料：The Art of Computer Systems Performance Analysis
+ #### 关于 Git Commit 之中信息记录
+ 
+-Git 本身就提供了：`git notes`。它可以给一个既有 commit 附加信息，同时**不修改这个 commit**。官方文档明确把它描述为“supplement a commit message without changing the commit itself”。[![](https://www.google.com/s2/favicons?domain=https://git-scm.com&sz=128)Git SCM](https://git-scm.com/docs/git-notes?utm_source=chatgpt.com)
++Git 本身就提供了：`git notes`。它可以给一个既有 commit 附加信息，同时**不修改这个 commit**。官方文档明确把它描述为“supplement a commit message without changing the commit itself”。[Git SCM](https://git-scm.com/docs/git-notes?utm_source=chatgpt.com)
+ 
+ 跑完 benchmark：`git notes add 8fa2137`写：
+ 
+diff --git a/content/site.js b/content/site.js
+index b65b212ea46bdc1d34c16e3b1da6df33110e43df..3d8518cac57971e39c3ede5e8a499634093c4207 100644
+--- a/content/site.js
++++ b/content/site.js
+@@ -6,65 +6,105 @@
+ window.SITE_DATA = {
+   profile: {
+     name: "T_IM",
++    displayName: "田家铭",
++    romanName: "Jiaming Tian",
+     shortName: "T",
+     role: "Computer Science Undergraduate",
+-    eyebrow: "HELLO, I AM",
+-    intro: "",
++    eyebrow: "COMPUTER SCIENCE · RUC",
++    intro: "在中国人民大学学习计算机科学，关注 Data Infra、数据库与计算机系统。从真实的数据问题出发，探索更可靠、高效的系统，也做一些让阅读与学习更顺手的小工具。",
+     status: "Open to learning & collaboration",
+-    tags: ["Database", "Agent Memory", "Computer System", "Vibe Coding", "羽毛球",
+-           "音乐", "昆虫", "观鸟", "阅读", "心理学", "经济学", "哲学", "商学", "传播学", "Research"
++    tags: ["Data Infra", "Database", "Computer Systems", "Agent Memory", "阅读工具", "浏览器扩展", "Obsidian", "AI 辅助开发", "羽毛球", "音乐", "阅读", "观鸟", "昆虫", "哲学"],
++    tagGroups: [
++      { label: "研究兴趣", tags: ["Data Infra", "Database", "Computer Systems", "Agent Memory"] },
++      { label: "工具与实践", tags: ["阅读工具", "浏览器扩展", "Obsidian", "AI 辅助开发"] },
++      { label: "生活与爱好", tags: ["羽毛球", "音乐", "阅读", "观鸟", "昆虫", "哲学"] }
+     ],
+     facts: [
+-      { label: "School", value: "Renmin University of China" },
+-      { label: "Major", value: "Computer Science" },
+-      { label: "Focus", value: "Database · Agent Memory" },
+-      { label: "Location", value: "Beijing, China" }
++      { label: "学校", value: "中国人民大学" },
++      { label: "专业", value: "计算机科学" },
++      { label: "关注", value: "Data Infra · Database" },
++      { label: "所在", value: "北京，中国" }
+     ],
+     actions: [
+       { label: "GitHub", url: "https://github.com/Exyeus", icon: "github", primary: true },
+-      { label: "Blogs", url: "blogs.html", icon: "note" },
+-      { label: "Resources", url: "resources.html", icon: "tool" }
++      { label: "阅读笔记", url: "blogs.html", icon: "note" },
++      { label: "我的工具", url: "resources.html", icon: "tool" }
+     ]
+   },
+ 
+   about: [
+     {
+-      kicker: "综合",
+-      title: "近期关注点",
+-      text: "通过学习西方哲学试着让自己的一些思考已久的问题得到一个锚点，并拥有解释一些现象的理论。\n用一些更有效的方式来提升对于快节奏生活的抗性。\n理解人之为人。\n在 AI Infra、Agent、Database、VLM/VLA等浅涉的科研领域确定发力方向。"
++      kicker: "DATA INFRA",
++      title: "让数据更好地服务计算",
++      text: "关注面向机器学习与 Physical AI 的数据基础设施：数据如何存储、组织、加载，以及如何降低访问开销。希望把数据库与计算机系统的知识放进真实工作负载中，通过可复现的实验理解性能瓶颈。"
++    },
++    {
++      kicker: "AGENT MEMORY",
++      title: "让记忆可追溯、可使用",
++      text: "持续关注 Agent Memory 中的信息持久化、检索与时效性，思考怎样把历史信息组织成可验证、可使用的上下文。这是正在探索的研究兴趣，也连接着我对数据库和知识管理工具的好奇。"
++    },
++    {
++      kicker: "TOOLS FOR LEARNING",
++      title: "从日常的不顺手开始",
++      text: "围绕论文阅读、网页批注和知识整理制作小工具。用 Obsidian 的段旁评论承接阅读时的想法，用 ChatGPT 的阅读进度与批注工具接续长对话，也在 Liteasy 中探索更连贯的论文阅读与研究工作流。"
++    }
++  ],
++
++  featured: [
++    {
++      title: "数据库系统实践",
++      kicker: "DATABASE SYSTEMS",
++      description: "从功能正确性到事务处理性能，在数据库竞赛中探索缓冲池、I/O、并发与日志策略。把每一次优化放回完整工作负载中检验。",
++      url: "projects.html#database-systems",
++      tags: ["C++", "Database", "Performance"]
++    },
++    {
++      title: "阅读与批注工具",
++      kicker: "READING TOOLS",
++      description: "Obsidian Margin Comment 与 ChatGPT Reading Progress，让原文、阅读进度和自己的思考留在一起，减少中断后重新寻找上下文的成本。",
++      url: "resources.html",
++      tags: ["Obsidian", "浏览器扩展", "知识管理"]
++    },
++    {
++      title: "Liteasy",
++      kicker: "RESEARCH WORKFLOW",
++      description: "参与构建面向论文阅读的 Agent Native 工具，探索 PDF 阅读、上下文管理、Agent 交互与研究材料组织的衔接。",
++      url: "projects.html#liteasy",
++      tags: ["论文阅读", "Agent", "国家级大创"]
+     }
+   ],
+ 
+   projects: [
+     {
++      id: "database-systems",
+       year: "2026",
+       title: "全国大学生计算机系统能力大赛 · 数据库管理系统设计赛全国总决赛",
+-      description: "作为队长参赛，参与完成了大部分功能的调优与正确实现，在决赛性能优化阶段做出了一些重要改进以在 TPC-C 类测试下提升每分钟处理事务数。优化方法包括测试 Buffer Pool 大小、\
+-      测试 Replacer、改用 pwrite、fdatasync 等轻量化/适于并发的系统调用、GC 的分批执行、WAL的策略更改等等。在线下决赛成功通过手写实现功能。",
++      description: "作为队长，参与主要功能的实现、正确性修复与性能调优。围绕 TPC-C 类测试，探索缓冲池大小与替换策略、pwrite / fdatasync 系统调用、分批 GC 和 WAL 策略，提升事务处理性能；在线下决赛通过现场手写功能实现。",
+       badge: "全国三等奖"
+     },
+     {
++      id: "liteasy",
+       year: "2026",
+-      title: "中国人民大学大学生创业训练",
+-      description: "作为技术方面负责人之一，研发一个 Agent Native 的 Paper 阅读器，参与结构设计，负责 Agent 框架构建与 UI 优化。对于数据可视化、Agent框架/上下文管理、PDF应用可视化开发经验（克服了 PDF.js 的一些选区问题）",
+-      badge: "国家级立项-推进中······"
++      title: "Liteasy · 中国人民大学大学生创业训练",
++      description: "作为技术负责人之一，参与 Agent Native 论文阅读器的架构设计，负责 Agent 框架构建与界面优化。围绕上下文管理、数据可视化和 PDF 阅读体验持续迭代，并处理 PDF.js 的选区问题。",
++      badge: "国家级立项 · 推进中"
+     },
+     {
+       year: "2026",
+       title: "ASC 世界大学生超级计算机竞赛",
+-      description: "几乎完全负责修复优化引力波计算模拟程序纯CPU版本（本年赛题第四题）。完成了本题在实验室提供服务器上面的部署运行，通过 MPI、循环优化等方式，将本题成功从异常终止中修复，并提速约20%。",
++      description: "主要负责引力波计算模拟程序纯 CPU 版本的修复与优化，完成实验室服务器上的部署运行。通过 MPI、循环优化等方式修复异常终止问题，并使程序提速约 20%。",
+       badge: "二等奖"
+     },
+     {
+       year: "2026",
+       title: "中国人民大学第28届创新杯课外学术科技作品竞赛",
+-      description: "作为第二作者，与新闻传播的同学合作研究了AI生成内容的信息判断路径与干预节点。在项目中负责了思路设计、部分对家人的访谈、数据处理与结论导出",
++      description: "作为第二作者，与新闻传播专业同学合作研究 AI 生成内容的信息判断路径与干预节点，参与研究思路设计、部分访谈、数据处理与结论归纳。",
+       badge: "特等奖"
+     },
+     {
+       year: "2026",
+       title: "2025-2026 北京外国语大学大创-创业实践项目",
+-      description: "作为技术方面的总负责人，从 2024 年起尝试用AI赋能单词学习参与单词讲解模式的设计，负责基于Coze的Agent工作流设计与实现。同时基于自己的英语与美术学习经验，确定了单词讲解的内容、风格以及初代的排版方式",
++      description: "作为技术总负责人，自 2024 年起探索 AI 辅助单词学习，参与讲解模式设计，负责基于 Coze 的 Agent 工作流设计与实现。结合英语与美术学习经验，设计讲解内容、视觉风格和初版排版。",
+       badge: "国家级立项 & 良好结项"
+     },
+     {
+@@ -83,17 +123,47 @@ window.SITE_DATA = {
+ 
+   resources: [
+     {
++      id: "obsidian-margin-comments",
++      title: "Obsidian Margin Comment",
++      description: "把想法留在原文旁边：选中文本添加段旁批注，支持评论回复与解决、Markdown 编辑和导出，让阅读与讨论保持在同一处。",
++      type: "Obsidian Plugin",
++      category: "Obsidian",
++      url: "",
++      status: "持续迭代",
++      note: "项目展示 · 发布入口待补充",
++      tags: ["文本划线", "段旁批注", "Markdown", "导出"],
++      icon: "note"
++    },
++    {
++      id: "chatgpt-reading-progress",
++      title: "ChatGPT Reading Progress",
++      alias: "ChatGPT Reading Process",
++      description: "为 ChatGPT 长对话记录分段阅读进度，接续上次阅读的位置；结合 Markdown 批注与白板整理思考，并导出为 Obsidian Canvas。",
++      type: "Browser Extension",
++      category: "浏览器扩展",
++      url: "https://github.com/Exyeus/chatgpt-reading-progress",
++      status: "持续迭代",
++      tags: ["阅读进度", "Markdown 批注", "白板", "Obsidian Canvas"],
++      icon: "note"
++    },
++    {
++      id: "weread-toolkit",
+       title: "WeRead Toolkit",
+       description: "围绕微信读书选文、模板化提示词、Markdown 导出与 AI 阅读工作流的浏览器插件。",
+       type: "Browser Extension",
++      category: "浏览器扩展",
+       url: "https://github.com/Exyeus/weread-web-assistant",
++      tags: ["微信读书", "选文", "Markdown", "AI 阅读"],
+       icon: "tool"
+     },
+     {
++      id: "theme-controller",
+       title: "Theme Controller",
+       description: "用于按时间规则自动切换 Obsidian 主题，并可视化编辑主题 CSS 属性、创建快照与回滚的社区插件。",
+       type: "Obsidian Plugin",
++      category: "Obsidian",
+       url: "https://github.com/Exyeus/obsidian-theme-controller",
++      tags: ["主题切换", "CSS 编辑", "快照", "回滚"],
+       icon: "tool"
+     }
+   ]
+diff --git a/index.html b/index.html
+index 20a6afb0dfaa345a14be755cd6bd93447f3326ca..8efb6b0dd7ff5ab7ba39146a81e31226e4cbb38b 100644
+--- a/index.html
++++ b/index.html
+@@ -1,86 +1,66 @@
+ <!doctype html>
+-<html lang="zh-CN">
++<html lang="zh-CN" data-theme="light">
+ <head>
+-  <meta charset="UTF-8" />
+-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+-  <meta name="description" content="T_IM 的个人主页：计算机科学、数据库系统、Agent Memory 与个人项目。" />
+-  <meta name="theme-color" content="#24271E" />
+-  <title>T_IM · Personal Homepage</title>
+-  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+-  <link rel="stylesheet" href="assets/styles.css" />
++  <meta charset="UTF-8"/>
++  <meta name="viewport" content="width=device-width, initial-scale=1"/>
++  <meta name="description" content="田家铭（T_IM），中国人民大学计算机科学本科生。关注 Data Infra、数据库系统、Agent Memory，制作阅读与知识管理工具。"/>
++  <meta name="theme-color" content="#fafbf8"/>
++  <meta name="color-scheme" content="light dark"/>
++  <meta property="og:title" content="田家铭 T_IM · Data Infra &amp; Computer Systems"/>
++  <meta property="og:description" content="田家铭（T_IM），中国人民大学计算机科学本科生。关注 Data Infra、数据库系统、Agent Memory，制作阅读与知识管理工具。"/>
++  <meta property="og:type" content="website"/>
++  <meta property="og:url" content="https://exyeus.github.io/"/>
++  <meta property="og:locale" content="zh_CN"/>
++  <link rel="canonical" href="https://exyeus.github.io/"/>
++  <title>田家铭 T_IM · Data Infra &amp; Computer Systems</title>
++  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml"/>
++  <script>try { document.documentElement.dataset.theme = localStorage.getItem('tim-homepage-theme') === 'dark' ? 'dark' : 'light'; } catch {}</script>
++  <link rel="stylesheet" href="assets/styles.css"/>
++  <script src="content/site.js" defer></script>
++  <script src="content/blogs.js" defer></script>
++  <script src="assets/app.js" defer></script>
+ </head>
+ <body data-page="home">
+-  <svg class="svg-sprite" aria-hidden="true">
+-    <symbol id="icon-home" viewBox="0 0 24 24"><path d="M3.5 10.7 12 3.8l8.5 6.9v8.1a1.7 1.7 0 0 1-1.7 1.7H5.2a1.7 1.7 0 0 1-1.7-1.7z"/><path d="M9.2 20.5v-6.1h5.6v6.1"/></symbol>
+-    <symbol id="icon-award" viewBox="0 0 24 24"><circle cx="12" cy="8.3" r="5.2"/><path d="m8.8 12.6-1 8 4.2-2.4 4.2 2.4-1-8"/><path d="m10.1 8.2 1.3 1.3 2.8-2.8"/></symbol>
+-    <symbol id="icon-note" viewBox="0 0 24 24"><path d="M6 3.5h9.2l3.8 3.8v13.2H6z"/><path d="M15 3.8v4h3.8M9 12h6M9 15.5h6"/></symbol>
+-    <symbol id="icon-tool" viewBox="0 0 24 24"><path d="M14.7 6.1a4.4 4.4 0 0 0-5.8 5.8L3.7 17a2.3 2.3 0 0 0 3.3 3.3l5.1-5.2a4.4 4.4 0 0 0 5.8-5.8l-2.6 2.5-2.7-.5-.5-2.7z"/></symbol>
+-    <symbol id="icon-github" viewBox="0 0 24 24"><path d="M12 2.8a9.2 9.2 0 0 0-2.9 17.9v-2.2c-2.4.5-2.9-1-2.9-1-.4-1-.9-1.3-.9-1.3-.8-.5 0-.5 0-.5.8.1 1.3.9 1.3.9.7 1.3 1.9.9 2.4.7.1-.6.3-1 .6-1.2-1.9-.2-3.9-1-3.9-4.1 0-.9.3-1.7.8-2.3-.1-.2-.4-1.1.1-2.3 0 0 .7-.2 2.5.9a8.6 8.6 0 0 1 4.5 0c1.7-1.1 2.5-.9 2.5-.9.5 1.2.2 2.1.1 2.3.5.6.8 1.4.8 2.3 0 3.2-1.9 3.9-3.9 4.1.3.3.6.8.6 1.6v3a9.2 9.2 0 0 0-2.9-17.9Z"/></symbol>
+-    <symbol id="icon-mail" viewBox="0 0 24 24"><rect x="3.5" y="5.2" width="17" height="13.6" rx="2"/><path d="m4.5 7 7.5 5.7L19.5 7"/></symbol>
+-    <symbol id="icon-link" viewBox="0 0 24 24"><path d="m9.5 14.5 5-5M8.2 17.8l-1 1a3.5 3.5 0 1 1-5-5l3.5-3.5a3.5 3.5 0 0 1 5 0M15.8 6.2l1-1a3.5 3.5 0 1 1 5 5l-3.5 3.5a3.5 3.5 0 0 1-5 0"/></symbol>
+-    <symbol id="icon-arrow" viewBox="0 0 24 24"><path d="M5 12h14M14 7l5 5-5 5"/></symbol>
+-    <symbol id="icon-search" viewBox="0 0 24 24"><circle cx="10.7" cy="10.7" r="6.7"/><path d="m15.7 15.7 4.3 4.3"/></symbol>
+-    <symbol id="icon-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+-    <symbol id="icon-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+-    <symbol id="icon-external" viewBox="0 0 24 24"><path d="M13 5h6v6M19 5l-8 8"/><path d="M18 14v4.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 4 18.5v-11A1.5 1.5 0 0 1 5.5 6H10"/></symbol>
+-    <symbol id="icon-calendar" viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="17" height="15" rx="2"/><path d="M7.5 3v5M16.5 3v5M3.5 10h17"/></symbol>
+-    <symbol id="icon-tag" viewBox="0 0 24 24"><path d="M3.5 5.5v6.2l8.8 8.8 8.2-8.2-8.8-8.8H5.5a2 2 0 0 0-2 2Z"/><circle cx="8" cy="8" r="1.2"/></symbol>
+-  </svg>
+-
+-  <button class="mobile-menu-button" id="mobileMenuButton" aria-label="打开导航" aria-expanded="false">
+-    <svg><use href="#icon-menu"></use></svg>
+-  </button>
+-
+-  <aside class="sidebar" id="sidebar">
+-    <div class="brand">
+-      <a href="#home" class="brand-mark" aria-label="返回首页">T</a>
+-      <div><strong id="brandName">T_IM</strong><span id="brandRole">CS Undergraduate</span></div>
++  <a class="skip-link" href="#main">跳到正文</a>
++  <header class="site-header">
++    <div class="header-inner container">
++      <a class="brand" href="index.html" aria-label="T_IM · 返回首页"><span class="brand-word">T_IM<span class="brand-dot">.</span></span><span class="brand-caption">学习 · 思考 · 构建</span></a>
++      <nav class="primary-nav" aria-label="主导航"><a href="index.html" aria-current="page">关于</a><a href="blogs.html">文章</a><a href="resources.html">工具</a><a href="projects.html">经历</a></nav>
++      <div class="header-actions"><a class="header-github" href="https://github.com/Exyeus" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a><button class="theme-toggle" id="themeToggle" type="button" aria-label="切换为深色主题" aria-pressed="false"><svg class="theme-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 13A8.5 8.5 0 0 1 11 3.5 8.5 8.5 0 1 0 20.5 13Z"/></svg><svg class="theme-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg></button></div>
+     </div>
+-    <nav class="primary-nav" aria-label="主导航">
+-      <a href="index.html" class="nav-link active"><svg><use href="#icon-home"></use></svg><span>个人信息</span></a>
+-      <a href="blogs.html" class="nav-link"><svg><use href="#icon-note"></use></svg><span>Blogs</span></a>
+-      <a href="resources.html" class="nav-link"><svg><use href="#icon-tool"></use></svg><span>资源工具</span></a>
+-      <a href="projects.html" class="nav-link"><svg><use href="#icon-award"></use></svg><span>项目经历</span></a>
+-    </nav>
+-    <div class="sidebar-footer">
+-      <p>Plain HTML · Zero build</p>
+-      <a href="README.md">编辑说明 <svg><use href="#icon-arrow"></use></svg></a>
+-    </div>
+-  </aside>
+-  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+-
+-  <main class="main-shell">
+-    <section class="hero page-section" id="home">
++  </header>
++  <main id="main" class="container main-content" tabindex="-1">
++    <section class="hero" aria-labelledby="heroName">
+       <div class="hero-copy">
+-        <p class="eyebrow" id="heroEyebrow">HELLO, I AM</p>
+-        <h1 id="heroName">T_IM</h1>
+-        <p class="hero-intro" id="heroIntro"></p>
+-        <div class="hero-actions" id="heroActions"></div>
+-        <div class="hero-tags" id="heroTags"></div>
+-      </div>
+-      <div class="profile-panel glass-panel">
+-        <div class="profile-avatar" id="profileAvatar">
+-          <img src="assets/avatar.jpg" alt="T_IM 的头像" />
+-        </div>
+-        <div class="profile-meta">
+-          <span class="status-dot"></span><span id="statusText">Open to learning & collaboration</span>
+-        </div>
+-        <dl id="profileFacts"></dl>
++        <p class="eyebrow hero-eyebrow" id="heroEyebrow">COMPUTER SCIENCE · RUC</p>
++        <h1 id="heroName">田家铭</h1>
++        <p class="hero-roman" id="heroRomanName">Jiaming Tian / T_IM</p>
++        <p class="hero-intro" id="heroIntro">在中国人民大学学习计算机科学，关注 Data Infra、数据库与计算机系统。从真实的数据问题出发，探索更可靠、高效的系统，也做一些让阅读与学习更顺手的小工具。</p>
++        <div class="hero-actions" id="heroActions"><a class="button button-primary" href="https://github.com/Exyeus">GitHub ↗</a><a class="button button-quiet" href="resources.html">我的工具 →</a></div>
+       </div>
++      <aside class="profile-aside" aria-label="个人信息">
++        <figure class="profile-photo"><img src="assets/avatar.jpg" width="220" height="220" alt="T_IM 的个人头像" fetchpriority="high"/></figure>
++        <p class="profile-caption"><span class="status-dot" aria-hidden="true"></span>保持好奇，持续构建。</p>
++        <dl id="profileFacts"><div><dt>学校</dt><dd>中国人民大学</dd></div><div><dt>专业</dt><dd>计算机科学</dd></div></dl>
++      </aside>
++    </section>
++    <section class="interests" aria-labelledby="interestsTitle">
++      <h2 class="visually-hidden" id="interestsTitle">我的兴趣</h2><div id="interestGroups" class="interest-groups"></div>
++    </section>
++    <section class="home-section" id="about" aria-labelledby="focusTitle">
++      <div class="section-heading"><div><p class="eyebrow">A FEW THINGS ON MY MIND</p><h2 id="focusTitle">正在关注</h2></div><span class="section-note">把好奇心放进真实的问题里。</span></div>
++      <div class="focus-grid" id="aboutGrid"></div>
++    </section>
++    <section class="home-section" aria-labelledby="workTitle">
++      <div class="section-heading"><div><p class="eyebrow">SELECTED WORK</p><h2 id="workTitle">从想法到实践</h2></div><a class="text-link" href="projects.html">全部经历 →</a></div>
++      <div class="featured-list" id="featuredList"></div>
+     </section>
+-
+-    <section class="page-section content-section" id="about">
+-      <div class="section-heading"><div><span class="section-index">01</span><h2>关于我</h2></div><p>我当前关注的主题、能力结构与长期方向。</p></div>
+-      <div class="about-grid" id="aboutGrid"></div>
++    <section class="home-section last-section" aria-labelledby="writingTitle">
++      <div class="section-heading"><div><p class="eyebrow">NOTES & REFLECTIONS</p><h2 id="writingTitle">最近写下</h2></div><a class="text-link" href="blogs.html">全部文章 →</a></div>
++      <div id="latestPosts" class="blog-list"></div>
+     </section>
+-
+-    <footer>
+-      <span id="footerText">Built with plain HTML, CSS and JavaScript.</span>
+-      <a href="#home">Back to top <svg><use href="#icon-arrow"></use></svg></a>
+-    </footer>
++    <noscript><p class="noscript-note">此页的目录与工具列表需要 JavaScript。你也可以在 <a href="https://github.com/Exyeus/exyeus.github.io/tree/main/content">GitHub 阅读原始内容</a>。</p></noscript>
+   </main>
+-
+-  <script src="content/site.js"></script>
+-  <script src="assets/app.js?v=20260826-6"></script>
++  <footer class="site-footer container"><div><a href="index.html" class="footer-name">T_IM<span class="brand-dot">.</span></a><span>保持好奇，认真做事。</span></div><a href="#main" class="back-top">回到顶部 <span aria-hidden="true">↑</span></a></footer>
+ </body>
+ </html>
+diff --git a/projects.html b/projects.html
+index f47d80afc3da3ddce7dbd84d499adefa777a14a7..3d09efb17b65c440e504f17e60dce794c6518234 100644
+--- a/projects.html
++++ b/projects.html
+@@ -1,44 +1,38 @@
+ <!doctype html>
+-<html lang="zh-CN">
++<html lang="zh-CN" data-theme="light">
+ <head>
+-  <meta charset="UTF-8" />
+-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+-  <meta name="description" content="T_IM 的项目经历。" />
+-  <meta name="theme-color" content="#24271E" />
+-  <title>T_IM · 项目经历</title>
+-  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+-  <link rel="stylesheet" href="assets/styles.css" />
++  <meta charset="UTF-8"/>
++  <meta name="viewport" content="width=device-width, initial-scale=1"/>
++  <meta name="description" content="T_IM 的数据库系统、Liteasy、超级计算及跨学科实践。"/>
++  <meta name="theme-color" content="#fafbf8"/>
++  <meta name="color-scheme" content="light dark"/>
++  <meta property="og:title" content="项目与经历 · T_IM"/>
++  <meta property="og:description" content="T_IM 的数据库系统、Liteasy、超级计算及跨学科实践。"/>
++  <meta property="og:type" content="website"/>
++  <meta property="og:url" content="https://exyeus.github.io/projects.html"/>
++  <meta property="og:locale" content="zh_CN"/>
++  <link rel="canonical" href="https://exyeus.github.io/projects.html"/>
++  <title>项目与经历 · T_IM</title>
++  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml"/>
++  <script>try { document.documentElement.dataset.theme = localStorage.getItem('tim-homepage-theme') === 'dark' ? 'dark' : 'light'; } catch {}</script>
++  <link rel="stylesheet" href="assets/styles.css"/>
++  <script src="content/site.js" defer></script>
++  <script src="content/blogs.js" defer></script>
++  <script src="assets/app.js" defer></script>
+ </head>
+ <body data-page="projects">
+-  <svg class="svg-sprite" aria-hidden="true">
+-    <symbol id="icon-home" viewBox="0 0 24 24"><path d="M3.5 10.7 12 3.8l8.5 6.9v8.1a1.7 1.7 0 0 1-1.7 1.7H5.2a1.7 1.7 0 0 1-1.7-1.7z"/><path d="M9.2 20.5v-6.1h5.6v6.1"/></symbol>
+-    <symbol id="icon-award" viewBox="0 0 24 24"><circle cx="12" cy="8.3" r="5.2"/><path d="m8.8 12.6-1 8 4.2-2.4 4.2 2.4-1-8"/><path d="m10.1 8.2 1.3 1.3 2.8-2.8"/></symbol>
+-    <symbol id="icon-note" viewBox="0 0 24 24"><path d="M6 3.5h9.2l3.8 3.8v13.2H6z"/><path d="M15 3.8v4h3.8M9 12h6M9 15.5h6"/></symbol>
+-    <symbol id="icon-tool" viewBox="0 0 24 24"><path d="M14.7 6.1a4.4 4.4 0 0 0-5.8 5.8L3.7 17a2.3 2.3 0 0 0 3.3 3.3l5.1-5.2a4.4 4.4 0 0 0 5.8-5.8l-2.6 2.5-2.7-.5-.5-2.7z"/></symbol>
+-    <symbol id="icon-arrow" viewBox="0 0 24 24"><path d="M5 12h14M14 7l5 5-5 5"/></symbol>
+-    <symbol id="icon-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+-    <symbol id="icon-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+-  </svg>
+-  <button class="mobile-menu-button" id="mobileMenuButton" aria-label="打开导航" aria-expanded="false"><svg><use href="#icon-menu"></use></svg></button>
+-  <aside class="sidebar" id="sidebar">
+-    <div class="brand"><a href="index.html" class="brand-mark" aria-label="返回首页">T</a><div><strong id="brandName">T_IM</strong><span id="brandRole">CS Undergraduate</span></div></div>
+-    <nav class="primary-nav" aria-label="主导航">
+-      <a href="index.html" class="nav-link"><svg><use href="#icon-home"></use></svg><span>个人信息</span></a>
+-      <a href="blogs.html" class="nav-link"><svg><use href="#icon-note"></use></svg><span>Blogs</span></a>
+-      <a href="resources.html" class="nav-link"><svg><use href="#icon-tool"></use></svg><span>资源工具</span></a>
+-      <a href="projects.html" class="nav-link active"><svg><use href="#icon-award"></use></svg><span>项目经历</span></a>
+-    </nav>
+-    <div class="sidebar-footer"><p>Plain HTML · Zero build</p><a href="README.md">编辑说明 <svg><use href="#icon-arrow"></use></svg></a></div>
+-  </aside>
+-  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+-  <main class="main-shell">
+-    <section class="page-section content-section standalone-section" id="projects">
+-      <div class="section-heading"><div><span class="section-index">01</span><h2>项目经历</h2></div><p>项目、实践与阶段性成果。</p></div>
+-      <div class="timeline" id="projectsList"></div>
+-    </section>
+-    <footer><span id="footerText">Built with plain HTML, CSS and JavaScript.</span><a href="index.html">Home <svg><use href="#icon-arrow"></use></svg></a></footer>
++  <a class="skip-link" href="#main">跳到正文</a>
++  <header class="site-header">
++    <div class="header-inner container">
++      <a class="brand" href="index.html" aria-label="T_IM · 返回首页"><span class="brand-word">T_IM<span class="brand-dot">.</span></span><span class="brand-caption">学习 · 思考 · 构建</span></a>
++      <nav class="primary-nav" aria-label="主导航"><a href="index.html">关于</a><a href="blogs.html">文章</a><a href="resources.html">工具</a><a href="projects.html" aria-current="page">经历</a></nav>
++      <div class="header-actions"><a class="header-github" href="https://github.com/Exyeus" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a><button class="theme-toggle" id="themeToggle" type="button" aria-label="切换为深色主题" aria-pressed="false"><svg class="theme-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 13A8.5 8.5 0 0 1 11 3.5 8.5 8.5 0 1 0 20.5 13Z"/></svg><svg class="theme-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg></button></div>
++    </div>
++  </header>
++  <main id="main" class="container main-content" tabindex="-1">
++    <header class="page-heading"><p class="eyebrow">LEARNING BY BUILDING</p><h1>项目与经历<span class="heading-period">.</span></h1><p>在实践中理解系统，在协作中完成有用的事情。</p></header><section class="timeline index-section" id="projectsList" aria-label="项目与经历时间线"></section>
++    <noscript><p class="noscript-note">此页的目录与工具列表需要 JavaScript。你也可以在 <a href="https://github.com/Exyeus/exyeus.github.io/tree/main/content">GitHub 阅读原始内容</a>。</p></noscript>
+   </main>
+-  <script src="content/site.js"></script>
+-  <script src="assets/app.js?v=20260826-6"></script>
++  <footer class="site-footer container"><div><a href="index.html" class="footer-name">T_IM<span class="brand-dot">.</span></a><span>保持好奇，认真做事。</span></div><a href="#main" class="back-top">回到顶部 <span aria-hidden="true">↑</span></a></footer>
+ </body>
+ </html>
+diff --git a/resources.html b/resources.html
+index b9767176de5450d3b756a887fe09b1a5b175c8c0..cfb92183a99d31d45a3c0b59d3feed2c3ded887c 100644
+--- a/resources.html
++++ b/resources.html
+@@ -1,45 +1,39 @@
+ <!doctype html>
+-<html lang="zh-CN">
++<html lang="zh-CN" data-theme="light">
+ <head>
+-  <meta charset="UTF-8" />
+-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+-  <meta name="description" content="T_IM 的资源工具。" />
+-  <meta name="theme-color" content="#24271E" />
+-  <title>T_IM · 资源工具</title>
+-  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+-  <link rel="stylesheet" href="assets/styles.css" />
++  <meta charset="UTF-8"/>
++  <meta name="viewport" content="width=device-width, initial-scale=1"/>
++  <meta name="description" content="Obsidian Margin Comment、ChatGPT Reading Progress 与其他阅读、知识管理工具。"/>
++  <meta name="theme-color" content="#fafbf8"/>
++  <meta name="color-scheme" content="light dark"/>
++  <meta property="og:title" content="工具与作品 · T_IM"/>
++  <meta property="og:description" content="Obsidian Margin Comment、ChatGPT Reading Progress 与其他阅读、知识管理工具。"/>
++  <meta property="og:type" content="website"/>
++  <meta property="og:url" content="https://exyeus.github.io/resources.html"/>
++  <meta property="og:locale" content="zh_CN"/>
++  <link rel="canonical" href="https://exyeus.github.io/resources.html"/>
++  <title>工具与作品 · T_IM</title>
++  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml"/>
++  <script>try { document.documentElement.dataset.theme = localStorage.getItem('tim-homepage-theme') === 'dark' ? 'dark' : 'light'; } catch {}</script>
++  <link rel="stylesheet" href="assets/styles.css"/>
++  <script src="content/site.js" defer></script>
++  <script src="content/blogs.js" defer></script>
++  <script src="assets/app.js" defer></script>
+ </head>
+ <body data-page="resources">
+-  <svg class="svg-sprite" aria-hidden="true">
+-    <symbol id="icon-home" viewBox="0 0 24 24"><path d="M3.5 10.7 12 3.8l8.5 6.9v8.1a1.7 1.7 0 0 1-1.7 1.7H5.2a1.7 1.7 0 0 1-1.7-1.7z"/><path d="M9.2 20.5v-6.1h5.6v6.1"/></symbol>
+-    <symbol id="icon-award" viewBox="0 0 24 24"><circle cx="12" cy="8.3" r="5.2"/><path d="m8.8 12.6-1 8 4.2-2.4 4.2 2.4-1-8"/><path d="m10.1 8.2 1.3 1.3 2.8-2.8"/></symbol>
+-    <symbol id="icon-note" viewBox="0 0 24 24"><path d="M6 3.5h9.2l3.8 3.8v13.2H6z"/><path d="M15 3.8v4h3.8M9 12h6M9 15.5h6"/></symbol>
+-    <symbol id="icon-tool" viewBox="0 0 24 24"><path d="M14.7 6.1a4.4 4.4 0 0 0-5.8 5.8L3.7 17a2.3 2.3 0 0 0 3.3 3.3l5.1-5.2a4.4 4.4 0 0 0 5.8-5.8l-2.6 2.5-2.7-.5-.5-2.7z"/></symbol>
+-    <symbol id="icon-arrow" viewBox="0 0 24 24"><path d="M5 12h14M14 7l5 5-5 5"/></symbol>
+-    <symbol id="icon-external" viewBox="0 0 24 24"><path d="M13 5h6v6M19 5l-8 8"/><path d="M18 14v4.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 4 18.5v-11A1.5 1.5 0 0 1 5.5 6H10"/></symbol>
+-    <symbol id="icon-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+-    <symbol id="icon-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+-  </svg>
+-  <button class="mobile-menu-button" id="mobileMenuButton" aria-label="打开导航" aria-expanded="false"><svg><use href="#icon-menu"></use></svg></button>
+-  <aside class="sidebar" id="sidebar">
+-    <div class="brand"><a href="index.html" class="brand-mark" aria-label="返回首页">T</a><div><strong id="brandName">T_IM</strong><span id="brandRole">CS Undergraduate</span></div></div>
+-    <nav class="primary-nav" aria-label="主导航">
+-      <a href="index.html" class="nav-link"><svg><use href="#icon-home"></use></svg><span>个人信息</span></a>
+-      <a href="blogs.html" class="nav-link"><svg><use href="#icon-note"></use></svg><span>Blogs</span></a>
+-      <a href="resources.html" class="nav-link active"><svg><use href="#icon-tool"></use></svg><span>资源工具</span></a>
+-      <a href="projects.html" class="nav-link"><svg><use href="#icon-award"></use></svg><span>项目经历</span></a>
+-    </nav>
+-    <div class="sidebar-footer"><p>Plain HTML · Zero build</p><a href="README.md">编辑说明 <svg><use href="#icon-arrow"></use></svg></a></div>
+-  </aside>
+-  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+-  <main class="main-shell">
+-    <section class="page-section content-section standalone-section" id="resources">
+-      <div class="section-heading"><div><span class="section-index">01</span><h2>资源工具</h2></div><p>我制作、维护或经常使用的项目与资源。</p></div>
+-      <div class="resource-grid" id="resourceList"></div>
+-    </section>
+-    <footer><span id="footerText">Built with plain HTML, CSS and JavaScript.</span><a href="index.html">Home <svg><use href="#icon-arrow"></use></svg></a></footer>
++  <a class="skip-link" href="#main">跳到正文</a>
++  <header class="site-header">
++    <div class="header-inner container">
++      <a class="brand" href="index.html" aria-label="T_IM · 返回首页"><span class="brand-word">T_IM<span class="brand-dot">.</span></span><span class="brand-caption">学习 · 思考 · 构建</span></a>
++      <nav class="primary-nav" aria-label="主导航"><a href="index.html">关于</a><a href="blogs.html">文章</a><a href="resources.html" aria-current="page">工具</a><a href="projects.html">经历</a></nav>
++      <div class="header-actions"><a class="header-github" href="https://github.com/Exyeus" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a><button class="theme-toggle" id="themeToggle" type="button" aria-label="切换为深色主题" aria-pressed="false"><svg class="theme-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 13A8.5 8.5 0 0 1 11 3.5 8.5 8.5 0 1 0 20.5 13Z"/></svg><svg class="theme-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg></button></div>
++    </div>
++  </header>
++  <main id="main" class="container main-content" tabindex="-1">
++    <header class="page-heading"><p class="eyebrow">SMALL TOOLS, EVERYDAY USE</p><h1>工具与作品<span class="heading-period">.</span></h1><p>从日常的不顺手开始，把阅读、思考和整理连接起来。</p></header>
++    <section class="index-section" aria-label="工具列表"><div class="index-toolbar"><div class="filter-pills" id="resourceFilters" role="group" aria-label="按工具平台筛选"></div><span class="result-count" id="resourceCount" role="status" aria-live="polite"></span></div><div class="resource-grid" id="resourceList"></div></section>
++    <noscript><p class="noscript-note">此页的目录与工具列表需要 JavaScript。你也可以在 <a href="https://github.com/Exyeus/exyeus.github.io/tree/main/content">GitHub 阅读原始内容</a>。</p></noscript>
+   </main>
+-  <script src="content/site.js"></script>
+-  <script src="assets/app.js?v=20260826-6"></script>
++  <footer class="site-footer container"><div><a href="index.html" class="footer-name">T_IM<span class="brand-dot">.</span></a><span>保持好奇，认真做事。</span></div><a href="#main" class="back-top">回到顶部 <span aria-hidden="true">↑</span></a></footer>
+ </body>
+ </html>
